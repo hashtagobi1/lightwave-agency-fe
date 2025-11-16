@@ -1,0 +1,57 @@
+[00:00:01.471] Server  WARN     ⚠ Minimum recommended TypeScript version is v5.1.0, older versions can potentially be incompatible with Next.js. Detected: 5.0.2
+[00:00:01.728] Server  LOG      ✓ Ready in 1219ms
+[00:00:05.091] Server  LOG      ○ Compiling / ...
+[00:00:09.633] Server  ERROR    ⨯ Error: Configuration must contain `projectId`
+[00:00:09.983] Server  ERROR    ⨯ Error: Configuration must contain `projectId`
+[00:00:10.457] Server  ERROR    ⨯ Error: Configuration must contain `projectId`
+[00:00:10.804] Server  ERROR    ⨯ Error: Configuration must contain `projectId`
+[00:00:11.635] Browser ERROR   uncaughtError: Error: Configuration must contain `projectId`
+[00:00:50.348] Server  LOG        Reload env: .env.local
+[00:00:51.769] Server  ERROR    ⨯ Error: Configuration must contain `projectId`
+[00:00:52.145] Server  ERROR    ⨯ Error: Configuration must contain `projectId`
+[00:00:52.593] Browser ERROR   uncaughtError: Error: Configuration must contain `projectId`
+[00:00:56.231] Server  LOG        Reload env: .env.local
+[00:00:56.996] Server  ERROR    ⨯ Error: Configuration must contain `projectId`
+[00:00:57.332] Server  ERROR    ⨯ Error: Configuration must contain `projectId`
+[00:00:57.605] Browser ERROR   uncaughtError: Error: Configuration must contain `projectId`
+[00:00:58.616] Server  LOG        Reload env: .env.local
+[00:00:59.364] Server  ERROR    ⨯ Error: Configuration must contain `projectId`
+[00:00:59.777] Server  ERROR    ⨯ Error: Configuration must contain `projectId`
+[00:00:59.973] Browser ERROR   uncaughtError: Error: Configuration must contain `projectId`
+[00:01:01.349] Server  LOG        Reload env: .env.local
+[00:01:02.178] Server  ERROR    ⨯ Error: Configuration must contain `projectId`
+[00:01:02.703] Server  ERROR    ⨯ Error: Configuration must contain `projectId`
+[00:01:02.990] Browser ERROR   uncaughtError: Error: Configuration must contain `projectId`
+[00:01:04.547] Server  LOG        Reload env: .env.local
+[00:01:06.271] Server  ERROR    ⨯ Error: Configuration must contain `projectId`
+[00:01:07.404] Server  ERROR    ⨯ Error: Configuration must contain `projectId`
+[00:01:09.122] Server  ERROR    ⨯ Error: Configuration must contain `projectId`
+[00:01:09.597] Server  ERROR    ⨯ Error: Configuration must contain `projectId`
+[00:01:10.054] Browser ERROR   uncaughtError: Error: Configuration must contain `projectId`
+[00:01:12.936] Server  LOG        Reload env: .env.local
+[00:01:12.965] Server  LOG      ✓ Compiled in 0ms
+[00:01:15.582] Browser WARN    Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly.
+[00:01:29.870] Server  LOG     {}
+[00:01:54.427] Server  LOG     {}
+[00:03:29.535] Server  LOG      ✓ Compiled in 580ms
+[00:03:30.126] Browser LOG     {}
+[00:03:30.126] Browser LOG     {}
+[00:03:30.745] Server  LOG      ✓ Compiled in 114ms
+[00:03:31.179] Browser ERROR   uncaughtError: ReferenceError: Can't find variable: pr
+[00:03:31.642] Server  LOG      ✓ Compiled in 415ms
+[00:03:31.728] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:03:32.132] Browser LOG     {"projects":[{"_id":"7843aa99-3cbd-4fd0-97b6-d35104bfd56b","client":"English National Ballet","images":null,"note":"75th Anniversary Performance - “Echoes of Études”","result":"An original spoken-word/rap piece that helped bridge ENB’s classical roots with contemporary storytelling. \n\nTwo sold-out shows and cross-disciplinary production that resonated with both traditional ballet audiences and new-generation listeners.\n","slug":"english-national-ballet-collab","title":"English National Ballet Collab","videoUrl":"https://www.youtube.com/embed/Q8Do7UXOwIU"}]}
+[00:03:32.132] Browser LOG     {"projects":[{"_id":"7843aa99-3cbd-4fd0-97b6-d35104bfd56b","client":"English National Ballet","images":null,"note":"75th Anniversary Performance - “Echoes of Études”","result":"An original spoken-word/rap piece that helped bridge ENB’s classical roots with contemporary storytelling. \n\nTwo sold-out shows and cross-disciplinary production that resonated with both traditional ballet audiences and new-generation listeners.\n","slug":"english-national-ballet-collab","title":"English National Ballet Collab","videoUrl":"https://www.youtube.com/embed/Q8Do7UXOwIU"}]}
+[00:03:32.829] Server  LOG      ✓ Compiled in 100ms
+[00:03:32.906] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:03:33.148] Server  LOG     {}
+[00:03:33.170] Browser LOG     {"projects":[{"_id":"7843aa99-3cbd-4fd0-97b6-d35104bfd56b","client":"English National Ballet","images":null,"note":"75th Anniversary Performance - “Echoes of Études”","result":"An original spoken-word/rap piece that helped bridge ENB’s classical roots with contemporary storytelling. \n\nTwo sold-out shows and cross-disciplinary production that resonated with both traditional ballet audiences and new-generation listeners.\n","slug":"english-national-ballet-collab","title":"English National Ballet Collab","videoUrl":"https://www.youtube.com/embed/Q8Do7UXOwIU"}]}
+[00:03:33.170] Browser LOG     {"projects":[{"_id":"7843aa99-3cbd-4fd0-97b6-d35104bfd56b","client":"English National Ballet","images":null,"note":"75th Anniversary Performance - “Echoes of Études”","result":"An original spoken-word/rap piece that helped bridge ENB’s classical roots with contemporary storytelling. \n\nTwo sold-out shows and cross-disciplinary production that resonated with both traditional ballet audiences and new-generation listeners.\n","slug":"english-national-ballet-collab","title":"English National Ballet Collab","videoUrl":"https://www.youtube.com/embed/Q8Do7UXOwIU"}]}
+[00:03:36.230] Browser LOG     {"projects":[{"_id":"7843aa99-3cbd-4fd0-97b6-d35104bfd56b","client":"English National Ballet","images":null,"note":"75th Anniversary Performance - “Echoes of Études”","result":"An original spoken-word/rap piece that helped bridge ENB’s classical roots with contemporary storytelling. \n\nTwo sold-out shows and cross-disciplinary production that resonated with both traditional ballet audiences and new-generation listeners.\n","slug":"english-national-ballet-collab","title":"English National Ballet Collab","videoUrl":"https://www.youtube.com/embed/Q8Do7UXOwIU"}]}
+[00:03:36.230] Browser LOG     {"projects":[{"_id":"7843aa99-3cbd-4fd0-97b6-d35104bfd56b","client":"English National Ballet","images":null,"note":"75th Anniversary Performance - “Echoes of Études”","result":"An original spoken-word/rap piece that helped bridge ENB’s classical roots with contemporary storytelling. \n\nTwo sold-out shows and cross-disciplinary production that resonated with both traditional ballet audiences and new-generation listeners.\n","slug":"english-national-ballet-collab","title":"English National Ballet Collab","videoUrl":"https://www.youtube.com/embed/Q8Do7UXOwIU"}]}
+[00:03:41.333] Browser WARN    Please ensure that the container has a non-static position, like 'relative', 'fixed', or 'absolute' to ensure scroll offset is calculated correctly.
+[00:06:13.330] Browser LOG     {"projects":[{"_id":"7843aa99-3cbd-4fd0-97b6-d35104bfd56b","client":"English National Ballet","images":null,"note":"75th Anniversary Performance - “Echoes of Études”","result":"An original spoken-word/rap piece that helped bridge ENB’s classical roots with contemporary storytelling. \n\nTwo sold-out shows and cross-disciplinary production that resonated with both traditional ballet audiences and new-generation listeners.\n","slug":"english-national-ballet-collab","title":"English National Ballet Collab","videoUrl":"https://www.youtube.com/embed/Q8Do7UXOwIU"}]}
+[00:06:13.330] Browser LOG     {"projects":[{"_id":"7843aa99-3cbd-4fd0-97b6-d35104bfd56b","client":"English National Ballet","images":null,"note":"75th Anniversary Performance - “Echoes of Études”","result":"An original spoken-word/rap piece that helped bridge ENB’s classical roots with contemporary storytelling. \n\nTwo sold-out shows and cross-disciplinary production that resonated with both traditional ballet audiences and new-generation listeners.\n","slug":"english-national-ballet-collab","title":"English National Ballet Collab","videoUrl":"https://www.youtube.com/embed/Q8Do7UXOwIU"}]}
+[00:06:15.786] Server  LOG     {}
+[00:08:35.218] Browser LOG     {"projects":[{"_id":"7843aa99-3cbd-4fd0-97b6-d35104bfd56b","client":"English National Ballet","images":null,"note":"75th Anniversary Performance - “Echoes of Études”","result":"An original spoken-word/rap piece that helped bridge ENB’s classical roots with contemporary storytelling. \n\nTwo sold-out shows and cross-disciplinary production that resonated with both traditional ballet audiences and new-generation listeners.\n","slug":"english-national-ballet-collab","title":"English National Ballet Collab","videoUrl":"https://www.youtube.com/embed/Q8Do7UXOwIU"}]}
+[00:08:35.218] Browser LOG     {"projects":[{"_id":"7843aa99-3cbd-4fd0-97b6-d35104bfd56b","client":"English National Ballet","images":null,"note":"75th Anniversary Performance - “Echoes of Études”","result":"An original spoken-word/rap piece that helped bridge ENB’s classical roots with contemporary storytelling. \n\nTwo sold-out shows and cross-disciplinary production that resonated with both traditional ballet audiences and new-generation listeners.\n","slug":"english-national-ballet-collab","title":"English National Ballet Collab","videoUrl":"https://www.youtube.com/embed/Q8Do7UXOwIU"}]}
