@@ -6,6 +6,15 @@ import { allProjectsQuery, projectBySlugQuery } from "@/lib/sanity.queries";
 
 export const runtime = "nodejs";
 
+// helper to safely get a slug string from different shapes
+const getSlugValue = (item: any): string => {
+  if (!item) return "";
+  const slug = item.slug;
+  if (typeof slug === "string") return slug;
+  if (slug && typeof slug.current === "string") return slug.current;
+  return "";
+};
+
 export default async function ProjectDetail({
   params,
 }: {
@@ -19,20 +28,26 @@ export default async function ProjectDetail({
   ]);
 
   if (!project) return notFound();
-  console.log({ project });
 
-  const index = all.findIndex((p: any) => p.slug === slug);
-  if (index === -1) return notFound();
+  const currentSlug = getSlugValue(project);
+
+  // Find this project inside the "all" list by its slug.
+  // If for some reason it's not found, fall back to index 0
+  let index = all.findIndex((p: any) => getSlugValue(p) === currentSlug);
+  if (index === -1) index = 0;
 
   const prevIndex = (index - 1 + all.length) % all.length;
   const nextIndex = (index + 1) % all.length;
-  const prevSlug = all[prevIndex].slug;
-  const nextSlug = all[nextIndex].slug;
+  const prevSlug = getSlugValue(all[prevIndex]);
+  const nextSlug = getSlugValue(all[nextIndex]);
 
-  const others = all.filter((p: any) => p.slug !== slug);
-  const rotated = others
-    .slice(index % others.length)
-    .concat(others.slice(0, index % others.length));
+  const others = all.filter((p: any) => getSlugValue(p) !== currentSlug);
+  const rotated =
+    others.length > 0
+      ? others
+          .slice(index % others.length)
+          .concat(others.slice(0, index % others.length))
+      : [];
   const recommendations = rotated.slice(0, 3);
 
   return (
@@ -41,13 +56,16 @@ export default async function ProjectDetail({
         <Link href="/projects" className="text-sm underline">
           ← All projects
         </Link>
+
         <h1 className="mt-2 text-3xl sm:text-4xl font-extrabold leading-tight">
           {project.title}
         </h1>
+
         {project.note ? (
           <p className="text-black/70 mt-1">{project.note}</p>
         ) : null}
 
+        {/* Main layout: media (8) + summary (4) */}
         <div className="mt-6 grid lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8">
             {/* Media with Prev/Next arrows */}
@@ -82,20 +100,24 @@ export default async function ProjectDetail({
               )}
 
               {/* Prev/Next arrows */}
-              <Link
-                href={`/projects/${prevSlug}`}
-                aria-label="Previous project"
-                className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full border border-black/10 bg-white/90 px-3 py-2 text-sm shadow hover:bg-white"
-              >
-                ←
-              </Link>
-              <Link
-                href={`/projects/${nextSlug}`}
-                aria-label="Next project"
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full border border-black/10 bg-white/90 px-3 py-2 text-sm shadow hover:bg-white"
-              >
-                →
-              </Link>
+              {prevSlug && (
+                <Link
+                  href={`/projects/${prevSlug}`}
+                  aria-label="Previous project"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full border border-black/10 bg-white/90 px-3 py-2 text-sm shadow hover:bg-white"
+                >
+                  ←
+                </Link>
+              )}
+              {nextSlug && (
+                <Link
+                  href={`/projects/${nextSlug}`}
+                  aria-label="Next project"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full border border-black/10 bg-white/90 px-3 py-2 text-sm shadow hover:bg-white"
+                >
+                  →
+                </Link>
+              )}
             </div>
           </div>
 
@@ -104,51 +126,84 @@ export default async function ProjectDetail({
               <div className="uppercase tracking-widest text-xs text-black/60">
                 Case study
               </div>
-              <div className="mt-3 space-y-3 text-sm">
-                <p>
-                  <span className="font-semibold">Problem:</span>{" "}
-                  {project.problem}
-                </p>
-                <p>
-                  <span className="font-semibold">Approach:</span>{" "}
-                  {project.description}
-                </p>
-                <p>
-                  <span className="font-semibold">Result:</span>{" "}
-                  {project.result}
-                </p>
+
+              {/* Meta (role, format, location, year) */}
+              <div className="mt-3 space-y-1 text-xs text-black/70">
+                {project.role && (
+                  <p>
+                    <span className="font-semibold">Role:</span> {project.role}
+                  </p>
+                )}
+                {project.format && (
+                  <p>
+                    <span className="font-semibold">Format:</span>{" "}
+                    {project.format}
+                  </p>
+                )}
+                {project.location && (
+                  <p>
+                    <span className="font-semibold">Location:</span>{" "}
+                    {project.location}
+                  </p>
+                )}
+                {project.year && (
+                  <p>
+                    <span className="font-semibold">Year:</span> {project.year}
+                  </p>
+                )}
               </div>
-              <div className="mt-4 flex gap-2">
-                <Link href="/projects" className="underline text-sm">
-                  ← Back
-                </Link>
-                <Link href="/#contact" className="underline text-sm">
-                  Contact
-                </Link>
+
+              {/* Problem / Result (kept brief in this card) */}
+              <div className="mt-4 space-y-2 text-sm">
+                {project.problem && (
+                  <p>
+                    <span className="font-semibold">Problem:</span>{" "}
+                    {project.problem}
+                  </p>
+                )}
+                {project.result && (
+                  <p>
+                    <span className="font-semibold">Result:</span>{" "}
+                    {project.result}
+                  </p>
+                )}
               </div>
             </div>
           </div>
         </div>
+
+        {/* Full-width "Approach" block using description */}
+        {project.description && (
+          <div className="mt-10 rounded-xl border border-black/10 p-6">
+            <h2 className="text-lg font-semibold">Approach</h2>
+            <p className="mt-3 text-sm leading-relaxed whitespace-pre-line">
+              {project.description}
+            </p>
+          </div>
+        )}
 
         {/* Recommendations */}
         <div className="pt-10">
           <h3 className="text-xl font-semibold">More projects</h3>
           <p className="text-black/60 text-sm">Hand-picked for you</p>
           <div className="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {recommendations.map((c: any) => (
-              <Link
-                key={c.slug}
-                href={`/projects/${c.slug}`}
-                className="text-left rounded-xl border border-black/10 p-4 hover:bg-black/5"
-                aria-label={`Open ${c.title}`}
-              >
-                <div className="aspect-video rounded-md bg-black/5 border border-black/10 mb-3" />
-                <div className="font-medium leading-snug">{c.title}</div>
-                {c.note ? (
-                  <div className="text-xs text-black/60 mt-1">{c.note}</div>
-                ) : null}
-              </Link>
-            ))}
+            {recommendations.map((c: any) => {
+              const recSlug = getSlugValue(c);
+              return (
+                <Link
+                  key={recSlug}
+                  href={`/projects/${recSlug}`}
+                  className="text-left rounded-xl border border-black/10 p-4 hover:bg-black/5"
+                  aria-label={`Open ${c.title}`}
+                >
+                  <div className="aspect-video rounded-md bg-black/5 border border-black/10 mb-3" />
+                  <div className="font-medium leading-snug">{c.title}</div>
+                  {c.note ? (
+                    <div className="text-xs text-black/60 mt-1">{c.note}</div>
+                  ) : null}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>

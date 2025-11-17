@@ -1,8 +1,15 @@
 // app/projects/page.tsx
 import Link from "next/link";
-import { projects } from "@/lib/projects";
+import { sanityClient } from "@/lib/sanity.client";
+import { allProjectsQuery } from "@/lib/sanity.queries";
+import type { Project } from "../../../types/project";
+ // adjust if your path is different
 
-export default function ProjectsIndex() {
+export const revalidate = 60; // optional: ISR, revalidate every 60s
+
+export default async function ProjectsIndex() {
+  const projects = await sanityClient.fetch<Project[]>(allProjectsQuery);
+
   return (
     <main className="mx-auto max-w-7xl px-4 py-12">
       <div className="flex items-center justify-between gap-4">
@@ -25,8 +32,34 @@ export default function ProjectsIndex() {
             href={`/projects/${p.slug}`}
             className="group border border-black/10 rounded-xl p-4 hover:bg-black/5 transition-colors"
           >
-            {/* Thumb / placeholder */}
-            <div className="aspect-video rounded-lg bg-black/5 border border-black/10 mb-3" />
+            {/* Media thumb */}
+            <div className="aspect-video rounded-lg bg-black/5 border border-black/10 mb-3 overflow-hidden">
+              {p.videoUrl ? (
+                // 1) Prioritise video if present
+                <iframe
+                  title={p.title}
+                  className="w-full h-full"
+                  src={p.videoUrl}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : p.images && p.images.length ? (
+                // 2) Else, simple image grid if we have images
+                <div className="grid grid-cols-2 gap-1 w-full h-full">
+                  {p.images.slice(0, 2).map((_, i) => (
+                    <div
+                      key={i}
+                      className="w-full h-full rounded-md bg-black/10"
+                    />
+                  ))}
+                </div>
+              ) : (
+                // 3) Else, placeholder text
+                <div className="flex h-full w-full items-center justify-center text-[11px] text-black/50 px-2 text-center">
+                  Media coming soon
+                </div>
+              )}
+            </div>
 
             <h2 className="font-semibold leading-snug group-hover:underline">
               {p.title}
