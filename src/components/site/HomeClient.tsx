@@ -21,8 +21,6 @@ export default function HomeClient({
 }) {
   const ids = ["top", "work", "partners", "team", "book", "contact"];
   const featuredProjects = projects.filter((p) => p.featured);
-  console.log({ featuredProjects, projects });
-
 
   // helper for consistent animation
   const sectionAnim = (delayIndex: number) => ({

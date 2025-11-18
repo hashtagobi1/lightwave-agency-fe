@@ -2,7 +2,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Text, Environment, Stars } from "@react-three/drei";
+import { OrbitControls, Text, Stars } from "@react-three/drei";
 import * as THREE from "three";
 import { useRef } from "react";
 
@@ -84,7 +84,6 @@ function OrbitingSphere({
 
 function OrbitingField() {
   const planets: OrbitingSphereProps[] = [
-    // Mercury
     {
       radius: 1.7,
       height: 0.1,
@@ -93,7 +92,6 @@ function OrbitingField() {
       color: "#b1a39b",
       scale: 0.22,
     },
-    // Venus
     {
       radius: 2.0,
       height: -0.2,
@@ -102,7 +100,6 @@ function OrbitingField() {
       color: "#c7a869",
       scale: 0.32,
     },
-    // Earth
     {
       radius: 2.3,
       height: 0.2,
@@ -111,7 +108,6 @@ function OrbitingField() {
       color: "#2e66b8",
       scale: 0.34,
     },
-    // Mars
     {
       radius: 2.6,
       height: -0.3,
@@ -120,7 +116,6 @@ function OrbitingField() {
       color: "#b4431f",
       scale: 0.28,
     },
-    // Jupiter
     {
       radius: 3.0,
       height: 0.4,
@@ -129,7 +124,6 @@ function OrbitingField() {
       color: "#d6b08c",
       scale: 0.55,
     },
-    // Saturn
     {
       radius: 3.3,
       height: -0.4,
@@ -138,7 +132,6 @@ function OrbitingField() {
       color: "#d9c48e",
       scale: 0.48,
     },
-    // Uranus
     {
       radius: 3.6,
       height: 0.3,
@@ -147,7 +140,6 @@ function OrbitingField() {
       color: "#7fcad3",
       scale: 0.38,
     },
-    // Neptune
     {
       radius: 3.9,
       height: -0.1,
@@ -172,9 +164,9 @@ export function HeroCanvas() {
     <div className="h-72 sm:h-80 rounded-2xl border border-black/10 bg-black overflow-hidden">
       <Canvas
         camera={{ position: [0, 0.6, 5.4], fov: 45 }}
-        style={{ background: "#020617" }} // deep slate / cosmic
+        style={{ background: "#020617" }}
       >
-        {/* stronger cosmic background */}
+        {/* background + stars */}
         <color attach="background" args={["#020617"]} />
         <Stars
           radius={60}
@@ -190,8 +182,7 @@ export function HeroCanvas() {
         <directionalLight position={[3, 4, 5]} intensity={1.2} />
         <directionalLight position={[-4, -3, -5]} intensity={0.5} />
 
-        <Environment preset="city" />
-
+        {/* main object */}
         <RotatingLW />
         <OrbitingField />
 

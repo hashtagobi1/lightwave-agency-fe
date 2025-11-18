@@ -6,7 +6,6 @@ import type { TeamMember } from "../../../types/index";
 
 export function Team({ members }: { members: TeamMember[] }) {
   if (!members || members.length === 0) return null;
-  console.log({ members });
 
   return (
     <section
