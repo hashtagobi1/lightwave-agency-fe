@@ -23,12 +23,6 @@ function RotatingLW() {
       letterSpacing={0.04}
       anchorX="center"
       anchorY="middle"
-      depth={0.6}
-      bevelEnabled
-      bevelThickness={0.18}
-      bevelSize={0.08}
-      bevelSegments={16}
-      curveSegments={32}
     >
       LW
       <meshPhysicalMaterial
