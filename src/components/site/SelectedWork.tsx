@@ -7,12 +7,12 @@ import {
   CardContent,
   Button,
 } from "@/components/ui";
-import type { Project } from "../../../types/index";
-
-
+import type { Project } from "../../../types";
 
 export function SelectedWork({ projects }: { projects: Project[] }) {
+  // Only featured projects should be shown
   const featured = projects.filter((p) => p.featured);
+
   return (
     <section id="work" className="border-y border-black/10">
       <div className="mx-auto max-w-7xl px-4 py-12">
@@ -27,20 +27,20 @@ export function SelectedWork({ projects }: { projects: Project[] }) {
         </div>
 
         <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((p) => {
-            console.log({ p });
-            const videoFiles = p.videoFiles ?? [];
+          {featured.map((p) => {
+            const videoFiles = (p as any).videoFileUrls ?? [];
+            const audioFiles = p.audioFiles ?? [];
             const images = p.images ?? [];
 
-            const hasEmbed = Boolean(p.videoUrl);
-            const hasUploadedVideos = videoFiles.length > 0;
-            const hasImages = images.length > 0;
-
-            const heroVideoEmbed = hasEmbed ? p.videoUrl : null;
+            const heroVideoEmbed = p.videoUrl ?? null;
             const heroVideoFile =
-              !heroVideoEmbed && hasUploadedVideos ? videoFiles[0] : null;
+              !heroVideoEmbed && videoFiles[0] ? videoFiles[0] : null;
             const heroImage =
-              !heroVideoEmbed && !heroVideoFile && hasImages ? images[0] : null;
+              !heroVideoEmbed && !heroVideoFile && images[0] ? images[0] : null;
+            const heroAudio =
+              !heroVideoEmbed && !heroVideoFile && !heroImage && audioFiles[0]
+                ? audioFiles[0]
+                : null;
 
             const slug =
               typeof p.slug === "string" ? p.slug : (p as any).slug?.current;
@@ -53,11 +53,13 @@ export function SelectedWork({ projects }: { projects: Project[] }) {
                 <CardHeader>
                   <CardTitle>{p.title}</CardTitle>
                 </CardHeader>
+
                 <CardContent>
                   {/* HERO MEDIA */}
-                  <div className="aspect-video rounded-xl bg-black/5 border border-black/10 mb-3 overflow-hidden">
+                  <div className="relative aspect-video rounded-xl bg-black/5 border border-black/10 mb-3 overflow-hidden">
                     {heroVideoEmbed ? (
                       <iframe
+                        aria-label={`Video embed for ${p.title}`}
                         title={p.title}
                         className="w-full h-full"
                         src={heroVideoEmbed}
@@ -66,6 +68,7 @@ export function SelectedWork({ projects }: { projects: Project[] }) {
                       />
                     ) : heroVideoFile ? (
                       <video
+                        aria-label={`Video file for ${p.title}`}
                         className="w-full h-full"
                         src={heroVideoFile}
                         controls
@@ -73,8 +76,20 @@ export function SelectedWork({ projects }: { projects: Project[] }) {
                         playsInline
                       />
                     ) : heroImage ? (
-                      <div className="w-full h-full bg-black/10">
-                        {/* later: replace with next/image + urlFor(heroImage) */}
+                      <div className="w-full h-full bg-black/10" />
+                    ) : heroAudio ? (
+                      <div className="flex flex-col items-center justify-center h-full p-3">
+                        <span className="px-2 py-0.5 mb-2 text-[10px] font-semibold bg-blue-600 text-white rounded">
+                          AUDIO
+                        </span>
+                        <audio
+                          aria-label={`Audio for ${p.title}`}
+                          controls
+                          src={heroAudio.url}
+                        />
+                        <p className="text-[11px] mt-1 text-black/60">
+                          {heroAudio.label}
+                        </p>
                       </div>
                     ) : (
                       <div className="flex h-full w-full items-center justify-center text-[11px] text-black/50 px-2 text-center">
@@ -83,10 +98,12 @@ export function SelectedWork({ projects }: { projects: Project[] }) {
                     )}
                   </div>
 
+                  {/* NOTE */}
                   {p.note && (
                     <p className="mt-2 text-sm text-black/60">{p.note}</p>
                   )}
 
+                  {/* PROBLEM + RESULT */}
                   <div className="mt-4 space-y-2 text-sm">
                     {p.problem && (
                       <p className="line-clamp-3">

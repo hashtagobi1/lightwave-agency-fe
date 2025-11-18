@@ -3,55 +3,86 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import type { Project } from "../../../types/index";
+import type { Project } from "../../../types";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.06,
+      delayChildren: 0.05,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0 },
+};
 
 export function ProjectsGrid({ projects }: { projects: Project[] }) {
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {projects.map((p, index) => {
+    <motion.div
+      className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {projects.map((p) => {
         const slug =
           typeof p.slug === "string" ? p.slug : (p as any).slug?.current;
 
-        const hasVideo = Boolean(p.videoUrl);
-        const hasImages = p.images && p.images.length > 0;
+        const videoFiles = (p as any).videoFileUrls ?? [];
+        const audioFiles = p.audioFiles ?? [];
+        const images = p.images ?? [];
 
-        const delay = 0.05 + index * 0.04;
+        const heroVideoEmbed = p.videoUrl ?? null;
+        const heroVideoFile =
+          !heroVideoEmbed && videoFiles[0] ? videoFiles[0] : null;
+        const heroImage =
+          !heroVideoEmbed && !heroVideoFile && images[0] ? images[0] : null;
+        const heroAudio =
+          !heroVideoEmbed && !heroVideoFile && !heroImage && audioFiles[0]
+            ? audioFiles[0]
+            : null;
 
         return (
           <motion.div
             key={p._id}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.45,
-              ease: [0.16, 1, 0.3, 1],
-              delay,
-            }}
+            variants={cardVariants}
             whileHover={{ y: -4, scale: 1.01 }}
+            transition={{ type: "spring", stiffness: 220, damping: 20 }}
             className="h-full"
           >
             <Link
               href={`/projects/${slug}`}
               className="group block h-full border border-black/10 rounded-xl p-4 hover:bg-black/[0.02] transition-colors"
             >
-              {/* Media thumb */}
-              <div className="aspect-video rounded-lg bg-black/5 border border-black/10 mb-3 overflow-hidden">
-                {hasVideo ? (
+              <div className="relative aspect-video rounded-lg bg-black/5 border border-black/10 mb-3 overflow-hidden">
+                {heroVideoEmbed ? (
                   <iframe
-                    title={p.title}
+                    aria-label={`Video embed for ${p.title}`}
                     className="w-full h-full"
-                    src={p.videoUrl!}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
+                    src={heroVideoEmbed}
                   />
-                ) : hasImages ? (
-                  <div className="grid grid-cols-2 gap-1 w-full h-full">
-                    {p.images!.slice(0, 2).map((_, i) => (
-                      <div
-                        key={i}
-                        className="w-full h-full rounded-md bg-black/10"
-                      />
-                    ))}
+                ) : heroVideoFile ? (
+                  <video
+                    aria-label={`Video file for ${p.title}`}
+                    className="w-full h-full"
+                    src={heroVideoFile}
+                    controls
+                    playsInline
+                  />
+                ) : heroImage ? (
+                  <div className="w-full h-full bg-black/10" />
+                ) : heroAudio ? (
+                  <div className="flex flex-col items-center justify-center h-full p-3">
+                    <span className="px-2 py-0.5 mb-2 text-[10px] font-semibold bg-blue-600 text-white rounded">
+                      AUDIO
+                    </span>
+                    <audio controls src={heroAudio.url} />
+                    <p className="text-[10px] mt-1">{heroAudio.label}</p>
                   </div>
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-[11px] text-black/50 px-2 text-center">
@@ -73,20 +104,10 @@ export function ProjectsGrid({ projects }: { projects: Project[] }) {
                   {p.year}
                 </p>
               )}
-
-              {p.result && (
-                <p className="text-xs text-black/80 mt-2 line-clamp-2">
-                  <span className="font-semibold">Result:</span> {p.result}
-                </p>
-              )}
-
-              <span className="text-xs underline mt-3 inline-block">
-                View case study →
-              </span>
             </Link>
           </motion.div>
         );
       })}
-    </div>
+    </motion.div>
   );
 }

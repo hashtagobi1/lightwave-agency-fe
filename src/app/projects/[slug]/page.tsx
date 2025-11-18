@@ -6,7 +6,7 @@ import { allProjectsQuery, projectBySlugQuery } from "@/lib/sanity.queries";
 
 export const runtime = "nodejs";
 
-// helper to safely get a slug string from different shapes
+// helper to safely get slug string from different shapes
 const getSlugValue = (item: any): string => {
   if (!item) return "";
   const slug = item.slug;
@@ -28,6 +28,7 @@ export default async function ProjectDetail({
   ]);
 
   if (!project) return notFound();
+  console.log({ project });
 
   const currentSlug = getSlugValue(project);
 
@@ -48,25 +49,32 @@ export default async function ProjectDetail({
       : [];
   const recommendations = rotated.slice(0, 3);
 
-  // ---- HERO MEDIA LOGIC ----
-  const videoFileUrls: string[] = project.videoFileUrls || [];
-  const images = project.images || [];
+  // ---- MEDIA ARRAYS FROM GROQ PROJECTIONS ----
+  const videoFileUrls: string[] = project.videoFileUrls ?? [];
+
+  const audioUrls: string[] = project.audioFileUrls ?? [];
+  const audioLabels: (string | null | undefined)[] =
+    project.audioFileLabels ?? [];
+
+  const audioFiles = audioUrls.map((url, i) => ({
+    url,
+    label: audioLabels[i] || undefined,
+  }));
+
+  const images = project.images ?? [];
 
   const hasEmbed = Boolean(project.videoUrl);
   const hasUploadedVideos = videoFileUrls.length > 0;
   const hasImages = images.length > 0;
 
-  // choose heroMedia in order of priority:
-  // 1) videoUrl (embed)
-  // 2) first uploaded video file
-  // 3) first image (fallback)
+  // hero priority: embed > first uploaded video > first image
   const heroVideoEmbed = hasEmbed ? project.videoUrl : null;
   const heroVideoFile =
-    !hasEmbed && hasUploadedVideos ? videoFileUrls[0] : null;
+    !heroVideoEmbed && hasUploadedVideos ? videoFileUrls[0] : null;
   const heroImage =
     !heroVideoEmbed && !heroVideoFile && hasImages ? images[0] : null;
 
-  // extra media = all non-hero items
+  // extras (non-hero)
   const extraVideoFiles =
     heroVideoFile && videoFileUrls.length > 1
       ? videoFileUrls.slice(1)
@@ -92,10 +100,10 @@ export default async function ProjectDetail({
           <p className="text-black/70 mt-1">{project.note}</p>
         ) : null}
 
-        {/* Main layout: hero media (8) + summary (4) */}
+        {/* Main layout: hero media + summary */}
         <div className="mt-6 grid lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8">
-            {/* HERO MEDIA WITH PREV/NEXT ARROWS */}
+            {/* HERO MEDIA */}
             <div className="relative">
               {heroVideoEmbed ? (
                 <div className="aspect-video w-full overflow-hidden rounded-xl border border-black/10">
@@ -148,8 +156,10 @@ export default async function ProjectDetail({
               )}
             </div>
 
-            {/* OPTIONAL: extra media (videos + images) below hero */}
-            {(extraVideoFiles.length > 0 || extraImages.length > 0) && (
+            {/* EXTRA MEDIA: more videos + images + audio */}
+            {(extraVideoFiles.length > 0 ||
+              extraImages.length > 0 ||
+              audioFiles.length > 0) && (
               <div className="mt-6 space-y-4">
                 {extraVideoFiles.length > 0 && (
                   <div className="space-y-2">
@@ -192,11 +202,43 @@ export default async function ProjectDetail({
                     </div>
                   </div>
                 )}
+
+                {audioFiles.length > 0 && (
+                  <div className="space-y-2">
+                    <h2 className="text-sm font-semibold text-black/70">
+                      Audio
+                    </h2>
+                    <div className="grid gap-3">
+                      {audioFiles.map((file, i) => (
+                        <div
+                          key={i}
+                          className="rounded-xl border border-black/10 p-3 bg-white"
+                        >
+                          {file.label && (
+                            <div className="text-xs font-medium mb-1">
+                              {file.label}
+                            </div>
+                          )}
+                          <audio
+                            src={file.url}
+                            controls
+                            className="w-full"
+                            aria-label={
+                              file.label
+                                ? `Audio: ${file.label}`
+                                : `Audio file ${i + 1}`
+                            }
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
 
-          {/* Case study summary card (Problem / Result + meta) */}
+          {/* Case study summary card */}
           <div className="lg:col-span-4">
             <div className="rounded-xl border border-black/10 p-4">
               <div className="uppercase tracking-widest text-xs text-black/60">
@@ -246,7 +288,7 @@ export default async function ProjectDetail({
           </div>
         </div>
 
-        {/* Full-width "Approach" block using description */}
+        {/* Full-width “Approach” */}
         {project.description && (
           <div className="mt-10 rounded-xl border border-black/10 p-6">
             <h2 className="text-lg font-semibold">Approach</h2>
@@ -256,7 +298,7 @@ export default async function ProjectDetail({
           </div>
         )}
 
-        {/* Recommendations (unchanged) */}
+        {/* Recommendations */}
         <div className="pt-10">
           <h3 className="text-xl font-semibold">More projects</h3>
           <p className="text-black/60 text-sm">Hand-picked for you</p>

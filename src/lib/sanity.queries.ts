@@ -17,13 +17,13 @@ export const projectBySlugQuery = groq`
     problem,
     result,
     videoUrl,
-    featured
+    featured,
     "videoFileUrls": videoFiles[].asset->url,
     "audioFileUrls": audioFiles[].asset->url,
+    "audioFileLabels": audioFiles[].title,
     images[],
   }
 `;
-
 // All projects – used on /projects and homepage
 export const allProjectsQuery = groq`
   *[_type == "project"] | order(order asc, _createdAt desc) {
@@ -39,13 +39,10 @@ export const allProjectsQuery = groq`
     result,
     videoUrl,
     featured,
-
     "slug": slug.current,
-
-    // FIXED — return URLs instead of file objects
     "videoFileUrls": videoFiles[].asset->url,
     "audioFileUrls": audioFiles[].asset->url,
-
+    "audioFileLabels": audioFiles[].title,
     images[],
   }
 `;

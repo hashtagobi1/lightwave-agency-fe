@@ -113,6 +113,7 @@ export type Project = {
       [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
     };
     media?: unknown;
+    title?: string;
     _type: "file";
     _key: string;
   }>;
