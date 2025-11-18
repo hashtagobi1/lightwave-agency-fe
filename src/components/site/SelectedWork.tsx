@@ -1,5 +1,6 @@
 // src/components/site/SelectedWork.tsx
 import Link from "next/link";
+import Image from "next/image";
 import {
   Card,
   CardHeader,
@@ -29,8 +30,8 @@ export function SelectedWork({ projects }: { projects: Project[] }) {
         <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {featured.map((p) => {
             const videoFiles = (p as any).videoFileUrls ?? [];
-            const audioFiles = p.audioFiles ?? [];
-            const images = p.images ?? [];
+            const audioFiles = (p as any).audioFiles ?? [];
+            const images = (p as any).images ?? [];
 
             const heroVideoEmbed = p.videoUrl ?? null;
             const heroVideoFile =
@@ -41,6 +42,16 @@ export function SelectedWork({ projects }: { projects: Project[] }) {
               !heroVideoEmbed && !heroVideoFile && !heroImage && audioFiles[0]
                 ? audioFiles[0]
                 : null;
+
+            // Safely resolve an image URL
+            let heroImageUrl: string | null = null;
+            if (heroImage) {
+              if (typeof (heroImage as any).url === "string") {
+                heroImageUrl = (heroImage as any).url;
+              } else if ((heroImage as any).asset?.url) {
+                heroImageUrl = (heroImage as any).asset.url;
+              }
+            }
 
             const slug =
               typeof p.slug === "string" ? p.slug : (p as any).slug?.current;
@@ -75,8 +86,14 @@ export function SelectedWork({ projects }: { projects: Project[] }) {
                         preload="metadata"
                         playsInline
                       />
-                    ) : heroImage ? (
-                      <div className="w-full h-full bg-black/10" />
+                    ) : heroImageUrl ? (
+                      <Image
+                        src={heroImageUrl}
+                        alt={p.title ?? "Project cover image"}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
                     ) : heroAudio ? (
                       <div className="flex flex-col items-center justify-center h-full p-3">
                         <span className="px-2 py-0.5 mb-2 text-[10px] font-semibold bg-blue-600 text-white rounded">
@@ -86,10 +103,13 @@ export function SelectedWork({ projects }: { projects: Project[] }) {
                           aria-label={`Audio for ${p.title}`}
                           controls
                           src={heroAudio.url}
+                          className="w-full"
                         />
-                        <p className="text-[11px] mt-1 text-black/60">
-                          {heroAudio.label}
-                        </p>
+                        {heroAudio.label && (
+                          <p className="text-[11px] mt-1 text-black/60 text-center">
+                            {heroAudio.label}
+                          </p>
+                        )}
                       </div>
                     ) : (
                       <div className="flex h-full w-full items-center justify-center text-[11px] text-black/50 px-2 text-center">

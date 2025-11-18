@@ -19,12 +19,17 @@ export const projectBySlugQuery = groq`
     videoUrl,
     featured,
     "videoFileUrls": videoFiles[].asset->url,
-    "audioFileUrls": audioFiles[].asset->url,
-    "audioFileLabels": audioFiles[].title,
-    images[],
+    "audioFileUrls": audioFiles[].file.asset->url,
+    "audioFileLabels": audioFiles[].label,
+    images[]{
+      _key,
+      "url": asset->url,
+      asset
+    },
   }
 `;
 // All projects – used on /projects and homepage
+
 export const allProjectsQuery = groq`
   *[_type == "project"] | order(order asc, _createdAt desc) {
     _id,
@@ -41,9 +46,13 @@ export const allProjectsQuery = groq`
     featured,
     "slug": slug.current,
     "videoFileUrls": videoFiles[].asset->url,
-    "audioFileUrls": audioFiles[].asset->url,
-    "audioFileLabels": audioFiles[].title,
-    images[],
+    "audioFileUrls": audioFiles[].file.asset->url,
+    "audioFileLabels": audioFiles[].label,
+    images[]{
+      _key,
+      "url": asset->url,
+      asset
+    },
   }
 `;
 

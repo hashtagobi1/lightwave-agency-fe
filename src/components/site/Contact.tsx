@@ -9,7 +9,7 @@ export function Contact() {
           General enquiries, reels, and treatments.
         </p>
         <Button asChild className="mt-4">
-          <a href="mailto:hello@lightwave.example">hello@lightwave.example</a>
+          <a href="mailto:lightwaveagent@gmail.com">lightwaveagent@gmail.com</a>
         </Button>
       </div>
     </section>

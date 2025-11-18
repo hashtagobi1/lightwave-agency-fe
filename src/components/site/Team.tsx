@@ -57,7 +57,7 @@ export function Team({ members }: { members: TeamMember[] }) {
                   <p className="text-xs text-black/60 mt-0.5">{m.title}</p>
                 )}
                 {m.description && (
-                  <p className="text-xs text-black/70 mt-2 ">
+                  <p className="text-xs text-black/70 mt-2 text-justify ">
                     {m.description}
                   </p>
                 )}

@@ -14,12 +14,12 @@ export function Book() {
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <Button asChild>
-              <a href="mailto:hello@lightwave.example?subject=Project%20Enquiry">
-                hello@lightwave.example
+              <a href="mailto:lightwaveagent@gmail.com?subject=Project%20Enquiry">
+                lightwaveagent@gmail.com
               </a>
             </Button>
             <Button variant="outline" asChild>
-              <a href="#calendar">{'->'}</a>
+              <a href="#calendar">{"->"}</a>
             </Button>
           </div>
         </div>

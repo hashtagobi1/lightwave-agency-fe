@@ -2,8 +2,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
-import type { Project } from "../../../types";
+import type { Project } from "../../../types/index";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -33,19 +34,13 @@ export function ProjectsGrid({ projects }: { projects: Project[] }) {
         const slug =
           typeof p.slug === "string" ? p.slug : (p as any).slug?.current;
 
-        const videoFiles = (p as any).videoFileUrls ?? [];
-        const audioFiles = p.audioFiles ?? [];
-        const images = p.images ?? [];
+        const hasVideo = Boolean(p.videoUrl);
+        const images = (p.images as any[]) ?? [];
+        const hasImages = images.length > 0;
+        const firstImage = hasImages ? images[0] : null;
 
-        const heroVideoEmbed = p.videoUrl ?? null;
-        const heroVideoFile =
-          !heroVideoEmbed && videoFiles[0] ? videoFiles[0] : null;
-        const heroImage =
-          !heroVideoEmbed && !heroVideoFile && images[0] ? images[0] : null;
-        const heroAudio =
-          !heroVideoEmbed && !heroVideoFile && !heroImage && audioFiles[0]
-            ? audioFiles[0]
-            : null;
+        const isAudioOnly =
+          !hasVideo && !hasImages && (p as any).audioFileUrls?.length > 0;
 
         return (
           <motion.div
@@ -59,30 +54,30 @@ export function ProjectsGrid({ projects }: { projects: Project[] }) {
               href={`/projects/${slug}`}
               className="group block h-full border border-black/10 rounded-xl p-4 hover:bg-black/[0.02] transition-colors"
             >
-              <div className="relative aspect-video rounded-lg bg-black/5 border border-black/10 mb-3 overflow-hidden">
-                {heroVideoEmbed ? (
+              {/* Media thumb */}
+              <div className="aspect-video rounded-lg bg-black/5 border border-black/10 mb-3 overflow-hidden relative">
+                {hasVideo ? (
                   <iframe
-                    aria-label={`Video embed for ${p.title}`}
+                    title={p.title}
                     className="w-full h-full"
-                    src={heroVideoEmbed}
+                    src={p.videoUrl!}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
                   />
-                ) : heroVideoFile ? (
-                  <video
-                    aria-label={`Video file for ${p.title}`}
-                    className="w-full h-full"
-                    src={heroVideoFile}
-                    controls
-                    playsInline
+                ) : firstImage && firstImage.url ? (
+                  <Image
+                    src={firstImage.url}
+                    alt={p.title ?? "Project image"}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 33vw"
                   />
-                ) : heroImage ? (
-                  <div className="w-full h-full bg-black/10" />
-                ) : heroAudio ? (
-                  <div className="flex flex-col items-center justify-center h-full p-3">
-                    <span className="px-2 py-0.5 mb-2 text-[10px] font-semibold bg-blue-600 text-white rounded">
+                ) : isAudioOnly ? (
+                  <div className="flex h-full w-full flex-col items-center justify-center text-[11px] text-black/60 px-3 text-center gap-1">
+                    <span className="inline-flex items-center rounded-full border border-black/20 bg-black/5 px-2 py-0.5 text-[10px] tracking-wide uppercase">
                       AUDIO
                     </span>
-                    <audio controls src={heroAudio.url} />
-                    <p className="text-[10px] mt-1">{heroAudio.label}</p>
+                    <span>Listen to the score</span>
                   </div>
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-[11px] text-black/50 px-2 text-center">
@@ -104,6 +99,16 @@ export function ProjectsGrid({ projects }: { projects: Project[] }) {
                   {p.year}
                 </p>
               )}
+
+              {p.result && (
+                <p className="text-xs text-black/80 mt-2 line-clamp-2">
+                  <span className="font-semibold">Result:</span> {p.result}
+                </p>
+              )}
+
+              <span className="text-xs underline mt-3 inline-block">
+                View case study →
+              </span>
             </Link>
           </motion.div>
         );

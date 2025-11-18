@@ -1,8 +1,11 @@
 // app/projects/[slug]/page.tsx
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { sanityClient } from "@/lib/sanity.client";
 import { allProjectsQuery, projectBySlugQuery } from "@/lib/sanity.queries";
+import { LightboxGallery } from "@/components/site/LightboxGallery";
+import { Recommendations } from "@/components/site/Recommendations";
 
 export const runtime = "nodejs";
 
@@ -28,7 +31,6 @@ export default async function ProjectDetail({
   ]);
 
   if (!project) return notFound();
-  console.log({ project });
 
   const currentSlug = getSlugValue(project);
 
@@ -61,7 +63,7 @@ export default async function ProjectDetail({
     label: audioLabels[i] || undefined,
   }));
 
-  const images = project.images ?? [];
+  const images: any[] = project.images ?? [];
 
   const hasEmbed = Boolean(project.videoUrl);
   const hasUploadedVideos = videoFileUrls.length > 0;
@@ -84,6 +86,14 @@ export default async function ProjectDetail({
 
   const extraImages =
     heroImage && images.length > 1 ? images.slice(1) : heroImage ? [] : images;
+
+  // build gallery array (hero + extras) with urls + alts
+  const galleryImages = images
+    .filter((img) => img && img.url)
+    .map((img, i) => ({
+      url: img.url as string,
+      alt: `${project.title ?? "Project"} image ${i + 1}`,
+    }));
 
   return (
     <section>
@@ -125,9 +135,16 @@ export default async function ProjectDetail({
                     playsInline
                   />
                 </div>
-              ) : heroImage ? (
-                <div className="aspect-video w-full overflow-hidden rounded-xl border border-black/10 bg-black/5">
-                  {/* later: next/image + urlFor(heroImage) */}
+              ) : heroImage && heroImage.url ? (
+                // HERO IMAGE – now clickable via the same LightboxGallery thumbnails below
+                <div className="cursor-pointer aspect-video w-full overflow-hidden rounded-xl border border-black/10 bg-black/5 relative">
+                  <Image
+                    src={heroImage.url}
+                    alt={project.title ?? "Project image"}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 66vw"
+                  />
                 </div>
               ) : (
                 <div className="aspect-video rounded-xl bg-black/5 border border-black/10 grid place-items-center text-black/40 text-xs">
@@ -158,7 +175,7 @@ export default async function ProjectDetail({
 
             {/* EXTRA MEDIA: more videos + images + audio */}
             {(extraVideoFiles.length > 0 ||
-              extraImages.length > 0 ||
+              galleryImages.length > 0 ||
               audioFiles.length > 0) && (
               <div className="mt-6 space-y-4">
                 {extraVideoFiles.length > 0 && (
@@ -185,21 +202,12 @@ export default async function ProjectDetail({
                   </div>
                 )}
 
-                {extraImages.length > 0 && (
+                {galleryImages.length > 0 && (
                   <div className="space-y-2">
                     <h2 className="text-sm font-semibold text-black/70">
                       Gallery
                     </h2>
-                    <div className="grid sm:grid-cols-3 gap-3">
-                      {extraImages.map((img: any, i: number) => (
-                        <div
-                          key={i}
-                          className="aspect-video rounded-xl bg-black/5 border border-black/10 overflow-hidden"
-                        >
-                          {/* later: next/image + urlFor(img) */}
-                        </div>
-                      ))}
-                    </div>
+                    <LightboxGallery images={galleryImages} />
                   </div>
                 )}
 
@@ -272,13 +280,13 @@ export default async function ProjectDetail({
 
               <div className="mt-4 space-y-2 text-sm">
                 {project.problem && (
-                  <p className="line-clamp-3">
+                  <p>
                     <span className="font-semibold">Problem:</span>{" "}
                     {project.problem}
                   </p>
                 )}
                 {project.result && (
-                  <p className="line-clamp-3">
+                  <p>
                     <span className="font-semibold">Result:</span>{" "}
                     {project.result}
                   </p>
@@ -299,29 +307,7 @@ export default async function ProjectDetail({
         )}
 
         {/* Recommendations */}
-        <div className="pt-10">
-          <h3 className="text-xl font-semibold">More projects</h3>
-          <p className="text-black/60 text-sm">Hand-picked for you</p>
-          <div className="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {recommendations.map((c: any) => {
-              const recSlug = getSlugValue(c);
-              return (
-                <Link
-                  key={recSlug}
-                  href={`/projects/${recSlug}`}
-                  className="text-left rounded-xl border border-black/10 p-4 hover:bg-black/5"
-                  aria-label={`Open ${c.title}`}
-                >
-                  <div className="aspect-video rounded-md bg-black/5 border border-black/10 mb-3" />
-                  <div className="font-medium leading-snug">{c.title}</div>
-                  {c.note ? (
-                    <div className="text-xs text-black/60 mt-1">{c.note}</div>
-                  ) : null}
-                </Link>
-              );
-            })}
-          </div>
-        </div>
+        <Recommendations items={recommendations} />
       </div>
     </section>
   );
