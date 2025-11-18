@@ -19,8 +19,8 @@ export const projectBySlugQuery = groq`
     videoUrl,
     featured,
     "videoFileUrls": videoFiles[].asset->url,
-    "audioFileUrls": audioFiles[].file.asset->url,
-    "audioFileLabels": audioFiles[].label,
+    "audioFileUrls": audioFiles[].asset->url,
+    "audioFileLabels": audioFiles[].title,
     images[]{
       _key,
       "url": asset->url,

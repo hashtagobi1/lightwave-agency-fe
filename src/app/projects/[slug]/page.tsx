@@ -175,7 +175,7 @@ export default async function ProjectDetail({
 
             {/* EXTRA MEDIA: more videos + images + audio */}
             {(extraVideoFiles.length > 0 ||
-              galleryImages.length > 0 ||
+              galleryImages.length > 1 ||
               audioFiles.length > 0) && (
               <div className="mt-6 space-y-4">
                 {extraVideoFiles.length > 0 && (
@@ -202,7 +202,7 @@ export default async function ProjectDetail({
                   </div>
                 )}
 
-                {galleryImages.length > 0 && (
+                {galleryImages.length > 1 && (
                   <div className="space-y-2">
                     <h2 className="text-sm font-semibold text-black/70">
                       Gallery
