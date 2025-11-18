@@ -7,7 +7,6 @@ import { Team } from "@/components/site/Team";
 import { Book } from "@/components/site/Book";
 import { Contact } from "@/components/site/Contact";
 import { Partners } from "@/components/site/Partners";
-import { useActiveSection } from "@/components/hooks/useActiveSection";
 import { motion } from "framer-motion";
 import type { Brand, TeamMember, Project } from "../../../types/index";
 
@@ -21,7 +20,6 @@ export default function HomeClient({
   team: TeamMember[];
 }) {
   const ids = ["top", "work", "partners", "team", "book", "contact"];
-  const active = useActiveSection(ids, true);
   const featuredProjects = projects.filter((p) => p.featured);
   console.log({ featuredProjects, projects });
 
