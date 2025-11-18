@@ -33,8 +33,8 @@ export function Team({ members }: { members: TeamMember[] }) {
               {m.photoUrl ? (
                 <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border border-black/10 bg-black/5">
                   <Image
-                    src={m.photoUrl}
-                    alt={m.name}
+                    src={m.photoUrl ?? ""}
+                    alt={m.name ?? "Team member photo"}
                     fill
                     sizes="64px"
                     className="object-cover"
@@ -43,11 +43,13 @@ export function Team({ members }: { members: TeamMember[] }) {
               ) : (
                 <div className="h-16 w-16 shrink-0 rounded-full border border-black/10 bg-black/5 flex items-center justify-center text-xs text-black/50">
                   {m.name
-                    .split(" ")
-                    .map((p) => p[0])
-                    .join("")
-                    .slice(0, 2)
-                    .toUpperCase()}
+                    ? m.name
+                        .split(" ")
+                        .map((p) => p[0])
+                        .join("")
+                        .slice(0, 2)
+                        .toUpperCase()
+                    : null}
                 </div>
               )}
 

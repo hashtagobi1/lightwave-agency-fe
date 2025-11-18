@@ -35,6 +35,7 @@ export type TeamMember = {
     _type: "image";
   };
   order?: number;
+  photoUrl: string | undefined;
 };
 
 export type SanityImageCrop = {
