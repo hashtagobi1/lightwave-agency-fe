@@ -53,6 +53,7 @@ export function Partners({ brands }: { brands: Brand[] }) {
 }
 
 function LogoPill({ brand }: { brand: Brand }) {
+  console.log({brand})
   const content = (
     <div className="flex h-14 sm:h-16 items-center justify-center px-6 sm:px-8 rounded-xl border border-black/10 bg-white/80 backdrop-blur shadow-sm">
       {brand.logoUrl ? (

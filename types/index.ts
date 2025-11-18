@@ -60,6 +60,7 @@ export type Brand = {
   _updatedAt: string;
   _rev: string;
   name?: string;
+  logoUrl?: string;
   logo?: {
     asset?: {
       _ref: string;
