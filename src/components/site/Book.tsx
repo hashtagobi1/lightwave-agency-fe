@@ -1,3 +1,6 @@
+"use client";
+
+import Script from "next/script";
 import { Button } from "@/components/ui";
 
 export function Book() {
@@ -16,16 +19,28 @@ export function Book() {
               </a>
             </Button>
             <Button variant="outline" asChild>
-              <a href="#calendar">Open calendar</a>
+              <a href="#calendar">{'->'}</a>
             </Button>
           </div>
         </div>
-        <div id="calendar" className="rounded-2xl border border-black/10 p-4">
-          <div className="aspect-video w-full rounded-lg bg-black/5 border border-black/10 grid place-items-center text-black/50 text-sm">
-            Calendly / Cal.com embed
-          </div>
+
+        <div
+          id="calendar"
+          className="rounded-2xl border border-black/10 p-4 overflow-hidden"
+        >
+          <div
+            className="calendly-inline-widget"
+            data-url="https://calendly.com/anokwuruobi/lightwave-discovery-call?hide_event_type_details=1&hide_gdpr_banner=1"
+            style={{ minWidth: "320px", height: "700px" }}
+          ></div>
         </div>
       </div>
+
+      {/* 👇 Drop the Script tag *right here* at the bottom of your markup */}
+      <Script
+        src="https://assets.calendly.com/assets/external/widget.js"
+        strategy="lazyOnload"
+      />
     </section>
   );
 }

@@ -74,9 +74,14 @@ const sanityClient = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_mo
 "[project]/src/lib/sanity.queries.ts [app-rsc] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
+// src/lib/sanity.queries.ts
 __turbopack_context__.s([
+    "allBrandsQuery",
+    ()=>allBrandsQuery,
     "allProjectsQuery",
     ()=>allProjectsQuery,
+    "allTeamQuery",
+    ()=>allTeamQuery,
     "featuredProjectsQuery",
     ()=>featuredProjectsQuery,
     "projectBySlugQuery",
@@ -84,24 +89,49 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$groq$40$4$2e$15$2e$0$2f$node_modules$2f$groq$2f$lib$2f$groq$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__groq$3e$__ = __turbopack_context__.i("[project]/node_modules/.pnpm/groq@4.15.0/node_modules/groq/lib/groq.js [app-rsc] (ecmascript) <export default as groq>");
 ;
-const allProjectsQuery = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$groq$40$4$2e$15$2e$0$2f$node_modules$2f$groq$2f$lib$2f$groq$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__groq$3e$__["groq"]`
-  *[_type == "project"] | order(order asc, year desc) {
+const projectBySlugQuery = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$groq$40$4$2e$15$2e$0$2f$node_modules$2f$groq$2f$lib$2f$groq$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__groq$3e$__["groq"]`
+  *[_type == "project" && slug.current == $slug][0]{
     _id,
     title,
-    "slug": slug.current,
-    note,
+    slug,
     client,
+    note,
+    role,
+    format,
+    location,
+    year,
+    description,
+    problem,
+    result,
+    videoUrl,
+    featured
+    "videoFileUrls": videoFiles[].asset->url,
+    "audioFileUrls": audioFiles[].asset->url,
+    images[],
+  }
+`;
+const allProjectsQuery = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$groq$40$4$2e$15$2e$0$2f$node_modules$2f$groq$2f$lib$2f$groq$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__groq$3e$__["groq"]`
+  *[_type == "project"] | order(order asc, _createdAt desc) {
+    _id,
+    title,
+    client,
+    note,
     role,
     format,
     location,
     year,
     problem,
-    description,
     result,
     videoUrl,
-    images,
     featured,
-    order
+
+    "slug": slug.current,
+
+    // FIXED — return URLs instead of file objects
+    "videoFileUrls": videoFiles[].asset->url,
+    "audioFileUrls": audioFiles[].asset->url,
+
+    images[],
   }
 `;
 const featuredProjectsQuery = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$groq$40$4$2e$15$2e$0$2f$node_modules$2f$groq$2f$lib$2f$groq$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__groq$3e$__["groq"]`
@@ -114,39 +144,36 @@ const featuredProjectsQuery = __TURBOPACK__imported__module__$5b$project$5d2f$no
     client,
     result,
     videoUrl,
-    images
+    images[],
   }
 `;
-const projectBySlugQuery = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$groq$40$4$2e$15$2e$0$2f$node_modules$2f$groq$2f$lib$2f$groq$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__groq$3e$__["groq"]`
-  *[_type == "project" && slug.current == $slug][0] {
+const allBrandsQuery = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$groq$40$4$2e$15$2e$0$2f$node_modules$2f$groq$2f$lib$2f$groq$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__groq$3e$__["groq"]`
+  *[_type == "brand"] | order(order asc, _createdAt desc) {
     _id,
+    name,
+    "logoUrl": logo.asset->url,
+    url
+  }
+`;
+const allTeamQuery = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$groq$40$4$2e$15$2e$0$2f$node_modules$2f$groq$2f$lib$2f$groq$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__groq$3e$__["groq"]`
+  *[_type == "team"] | order(order asc, _createdAt asc) {
+    _id,
+    name,
     title,
-    "slug": slug.current,
-    note,
-    client,
-    role,
-    format,
-    location,
-    year,
-    problem,
     description,
-    result,
-    videoUrl,
-    images,
-    featured,
-    order
+    "photoUrl": profilePic.asset->url,
   }
 `;
 }),
 "[project]/src/app/page.tsx [app-rsc] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
-// app/page.tsx
+// src/app/page.tsx
 __turbopack_context__.s([
     "default",
     ()=>Page,
-    "runtime",
-    ()=>runtime
+    "revalidate",
+    ()=>revalidate
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_$40$babel$2b$core$40$7$2e$28$2e$5_babel$2d$plugin$2d$react$2d$compiler$40$1$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/.pnpm/next@16.0.0_@babel+core@7.28.5_babel-plugin-react-compiler@1.0.0_react-dom@19.2.0_react@19.2.0/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-jsx-dev-runtime.js [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$site$2f$HomeClient$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/site/HomeClient.tsx [app-rsc] (ecmascript)");
@@ -156,14 +183,20 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$sanity$2e$quer
 ;
 ;
 ;
-const runtime = "nodejs";
+const revalidate = 60;
 async function Page() {
-    const featured = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$sanity$2e$client$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["sanityClient"].fetch(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$sanity$2e$queries$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["featuredProjectsQuery"]);
+    const [projects, brands, team] = await Promise.all([
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$sanity$2e$client$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["sanityClient"].fetch(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$sanity$2e$queries$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["allProjectsQuery"]),
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$sanity$2e$client$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["sanityClient"].fetch(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$sanity$2e$queries$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["allBrandsQuery"]),
+        __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$sanity$2e$client$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["sanityClient"].fetch(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$sanity$2e$queries$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["allTeamQuery"])
+    ]);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$0$2e$0_$40$babel$2b$core$40$7$2e$28$2e$5_babel$2d$plugin$2d$react$2d$compiler$40$1$2e$0$2e$0_react$2d$dom$40$19$2e$2$2e$0_react$40$19$2e$2$2e$0$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$site$2f$HomeClient$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {
-        projects: featured
+        projects: projects,
+        brands: brands,
+        team: team
     }, void 0, false, {
         fileName: "[project]/src/app/page.tsx",
-        lineNumber: 10,
+        lineNumber: 20,
         columnNumber: 10
     }, this);
 }

@@ -31,8 +31,6 @@ export default async function ProjectDetail({
 
   const currentSlug = getSlugValue(project);
 
-  // Find this project inside the "all" list by its slug.
-  // If for some reason it's not found, fall back to index 0
   let index = all.findIndex((p: any) => getSlugValue(p) === currentSlug);
   if (index === -1) index = 0;
 
@@ -50,6 +48,35 @@ export default async function ProjectDetail({
       : [];
   const recommendations = rotated.slice(0, 3);
 
+  // ---- HERO MEDIA LOGIC ----
+  const videoFileUrls: string[] = project.videoFileUrls || [];
+  const images = project.images || [];
+
+  const hasEmbed = Boolean(project.videoUrl);
+  const hasUploadedVideos = videoFileUrls.length > 0;
+  const hasImages = images.length > 0;
+
+  // choose heroMedia in order of priority:
+  // 1) videoUrl (embed)
+  // 2) first uploaded video file
+  // 3) first image (fallback)
+  const heroVideoEmbed = hasEmbed ? project.videoUrl : null;
+  const heroVideoFile =
+    !hasEmbed && hasUploadedVideos ? videoFileUrls[0] : null;
+  const heroImage =
+    !heroVideoEmbed && !heroVideoFile && hasImages ? images[0] : null;
+
+  // extra media = all non-hero items
+  const extraVideoFiles =
+    heroVideoFile && videoFileUrls.length > 1
+      ? videoFileUrls.slice(1)
+      : heroVideoFile
+        ? []
+        : videoFileUrls;
+
+  const extraImages =
+    heroImage && images.length > 1 ? images.slice(1) : heroImage ? [] : images;
+
   return (
     <section>
       <div className="mx-auto max-w-5xl px-4 py-10">
@@ -65,37 +92,38 @@ export default async function ProjectDetail({
           <p className="text-black/70 mt-1">{project.note}</p>
         ) : null}
 
-        {/* Main layout: media (8) + summary (4) */}
+        {/* Main layout: hero media (8) + summary (4) */}
         <div className="mt-6 grid lg:grid-cols-12 gap-8">
           <div className="lg:col-span-8">
-            {/* Media with Prev/Next arrows */}
+            {/* HERO MEDIA WITH PREV/NEXT ARROWS */}
             <div className="relative">
-              {project.videoUrl ? (
+              {heroVideoEmbed ? (
                 <div className="aspect-video w-full overflow-hidden rounded-xl border border-black/10">
                   <iframe
                     title={project.title}
                     className="w-full h-full"
-                    src={project.videoUrl}
+                    src={heroVideoEmbed}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
                 </div>
+              ) : heroVideoFile ? (
+                <div className="aspect-video w-full overflow-hidden rounded-xl border border-black/10 bg-black">
+                  <video
+                    className="w-full h-full"
+                    src={heroVideoFile}
+                    controls
+                    preload="metadata"
+                    playsInline
+                  />
+                </div>
+              ) : heroImage ? (
+                <div className="aspect-video w-full overflow-hidden rounded-xl border border-black/10 bg-black/5">
+                  {/* later: next/image + urlFor(heroImage) */}
+                </div>
               ) : (
-                <div className="grid sm:grid-cols-2 gap-3">
-                  {(project.images || []).length ? (
-                    (project.images || []).map((img: any, i: number) => (
-                      <div
-                        key={i}
-                        className="aspect-video rounded-xl bg-black/5 border border-black/10 overflow-hidden"
-                      >
-                        {/* later swap to next/image + urlFor(img) */}
-                      </div>
-                    ))
-                  ) : (
-                    <div className="aspect-video rounded-xl bg-black/5 border border-black/10 grid place-items-center text-black/40 text-xs">
-                      Media placeholder
-                    </div>
-                  )}
+                <div className="aspect-video rounded-xl bg-black/5 border border-black/10 grid place-items-center text-black/40 text-xs">
+                  Media placeholder
                 </div>
               )}
 
@@ -119,15 +147,62 @@ export default async function ProjectDetail({
                 </Link>
               )}
             </div>
+
+            {/* OPTIONAL: extra media (videos + images) below hero */}
+            {(extraVideoFiles.length > 0 || extraImages.length > 0) && (
+              <div className="mt-6 space-y-4">
+                {extraVideoFiles.length > 0 && (
+                  <div className="space-y-2">
+                    <h2 className="text-sm font-semibold text-black/70">
+                      Additional videos
+                    </h2>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      {extraVideoFiles.map((url: string, i: number) => (
+                        <div
+                          key={i}
+                          className="aspect-video rounded-xl border border-black/10 bg-black overflow-hidden"
+                        >
+                          <video
+                            className="w-full h-full"
+                            src={url}
+                            controls
+                            preload="metadata"
+                            playsInline
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {extraImages.length > 0 && (
+                  <div className="space-y-2">
+                    <h2 className="text-sm font-semibold text-black/70">
+                      Gallery
+                    </h2>
+                    <div className="grid sm:grid-cols-3 gap-3">
+                      {extraImages.map((img: any, i: number) => (
+                        <div
+                          key={i}
+                          className="aspect-video rounded-xl bg-black/5 border border-black/10 overflow-hidden"
+                        >
+                          {/* later: next/image + urlFor(img) */}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
+          {/* Case study summary card (Problem / Result + meta) */}
           <div className="lg:col-span-4">
             <div className="rounded-xl border border-black/10 p-4">
               <div className="uppercase tracking-widest text-xs text-black/60">
                 Case study
               </div>
 
-              {/* Meta (role, format, location, year) */}
               <div className="mt-3 space-y-1 text-xs text-black/70">
                 {project.role && (
                   <p>
@@ -153,16 +228,15 @@ export default async function ProjectDetail({
                 )}
               </div>
 
-              {/* Problem / Result (kept brief in this card) */}
               <div className="mt-4 space-y-2 text-sm">
                 {project.problem && (
-                  <p>
+                  <p className="line-clamp-3">
                     <span className="font-semibold">Problem:</span>{" "}
                     {project.problem}
                   </p>
                 )}
                 {project.result && (
-                  <p>
+                  <p className="line-clamp-3">
                     <span className="font-semibold">Result:</span>{" "}
                     {project.result}
                   </p>
@@ -182,7 +256,7 @@ export default async function ProjectDetail({
           </div>
         )}
 
-        {/* Recommendations */}
+        {/* Recommendations (unchanged) */}
         <div className="pt-10">
           <h3 className="text-xl font-semibold">More projects</h3>
           <p className="text-black/60 text-sm">Hand-picked for you</p>

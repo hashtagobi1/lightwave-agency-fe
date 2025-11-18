@@ -18,7 +18,7 @@ export function Hero() {
       <div className="mx-auto max-w-7xl px-4 py-16 sm:py-20 grid lg:grid-cols-12 gap-10 items-center">
         <div className="lg:col-span-7">
           <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight">
-            Creative agency for real-world visuals.
+            Creative agency creating culture and conversation.
           </h1>
           <p className="mt-4 text-black/70 max-w-xl">
             Light Wave partners with brands to capture life as it’s lived —

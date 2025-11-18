@@ -19,7 +19,7 @@ export function Roster({ items }: { items: Item[] }) {
                 <CardTitle>{d.name}</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="aspect-[3/2] rounded-xl bg-black/5 border border-black/10" />
+                <div className="aspect-3/2 rounded-xl bg-black/5 border border-black/10" />
                 <p className="mt-3 text-sm text-black/60">{d.style}</p>
                 <Button variant="ghost" size="sm" asChild>
                   <a href={d.link} className="underline">

@@ -1,27 +1,56 @@
+// src/lib/sanity.queries.ts
 import { groq } from "next-sanity";
 
-// minimal shape matching your current page
-export const allProjectsQuery = groq`
-  *[_type == "project"] | order(order asc, year desc) {
+// Single project by slug – used on /projects/[slug]
+export const projectBySlugQuery = groq`
+  *[_type == "project" && slug.current == $slug][0]{
     _id,
     title,
-    "slug": slug.current,
-    note,
+    slug,
     client,
+    note,
+    role,
+    format,
+    location,
+    year,
+    description,
+    problem,
+    result,
+    videoUrl,
+    featured
+    "videoFileUrls": videoFiles[].asset->url,
+    "audioFileUrls": audioFiles[].asset->url,
+    images[],
+  }
+`;
+
+// All projects – used on /projects and homepage
+export const allProjectsQuery = groq`
+  *[_type == "project"] | order(order asc, _createdAt desc) {
+    _id,
+    title,
+    client,
+    note,
     role,
     format,
     location,
     year,
     problem,
-    description,
     result,
     videoUrl,
-    images,
     featured,
-    order
+
+    "slug": slug.current,
+
+    // FIXED — return URLs instead of file objects
+    "videoFileUrls": videoFiles[].asset->url,
+    "audioFileUrls": audioFiles[].asset->url,
+
+    images[],
   }
 `;
 
+// Featured projects – e.g. for homepage selected work
 export const featuredProjectsQuery = groq`
   *[_type == "project" && featured == true]
   | order(order asc, year desc)[0...3] {
@@ -32,27 +61,27 @@ export const featuredProjectsQuery = groq`
     client,
     result,
     videoUrl,
-    images
+    images[],
   }
 `;
 
-export const projectBySlugQuery = groq`
-  *[_type == "project" && slug.current == $slug][0] {
+// Brands / partners – for the Partners wall
+export const allBrandsQuery = groq`
+  *[_type == "brand"] | order(order asc, _createdAt desc) {
     _id,
+    name,
+    "logoUrl": logo.asset->url,
+    url
+  }
+`;
+
+// Team – for the "Team" section
+export const allTeamQuery = groq`
+  *[_type == "team"] | order(order asc, _createdAt asc) {
+    _id,
+    name,
     title,
-    "slug": slug.current,
-    note,
-    client,
-    role,
-    format,
-    location,
-    year,
-    problem,
     description,
-    result,
-    videoUrl,
-    images,
-    featured,
-    order
+    "photoUrl": profilePic.asset->url,
   }
 `;

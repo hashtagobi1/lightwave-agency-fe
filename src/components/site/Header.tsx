@@ -10,7 +10,7 @@ export function Header({
   onHomeScroll?: (id: string) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const links = ["work", "roster", "book", "contact"] as const;
+  const links = ["work", "team", "book", "contact"] as const;
 
   const click = (id: string) => (e: React.MouseEvent) => {
     if (onHomeScroll) {
