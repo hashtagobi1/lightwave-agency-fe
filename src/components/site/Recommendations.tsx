@@ -60,6 +60,9 @@ export function Recommendations({ items }: { items: AnyProject[] }) {
                     className="w-full h-full"
                     src={heroVideoFile}
                     controls
+                    autoPlay
+                    muted
+                    loop
                     preload="metadata"
                     playsInline
                   />

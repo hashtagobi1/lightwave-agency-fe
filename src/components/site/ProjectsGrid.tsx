@@ -76,6 +76,9 @@ export function ProjectsGrid({ projects }: { projects: Project[] }) {
                     className="w-full h-full"
                     src={heroVideoFile}
                     controls
+                    autoPlay
+                    muted
+                    loop
                     preload="metadata"
                     playsInline
                     aria-label={`Video for ${p.title}`}

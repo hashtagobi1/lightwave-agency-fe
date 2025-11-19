@@ -6,6 +6,7 @@ import { sanityClient } from "@/lib/sanity.client";
 import { allProjectsQuery, projectBySlugQuery } from "@/lib/sanity.queries";
 import { LightboxGallery } from "@/components/site/LightboxGallery";
 import { Recommendations } from "@/components/site/Recommendations";
+import { VideoPreview } from "@/components/site/VideoPreview";
 
 export const runtime = "nodejs";
 
@@ -131,6 +132,9 @@ export default async function ProjectDetail({
                     className="w-full h-full"
                     src={heroVideoFile}
                     controls
+                    autoPlay
+                    muted
+                    loop
                     preload="metadata"
                     playsInline
                   />
@@ -189,12 +193,9 @@ export default async function ProjectDetail({
                           key={i}
                           className="aspect-video rounded-xl border border-black/10 bg-black overflow-hidden"
                         >
-                          <video
-                            className="w-full h-full"
+                          <VideoPreview
                             src={url}
-                            controls
-                            preload="metadata"
-                            playsInline
+                            className="w-full h-full object-cover"
                           />
                         </div>
                       ))}

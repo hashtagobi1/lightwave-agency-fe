@@ -83,6 +83,9 @@ export function SelectedWork({ projects }: { projects: Project[] }) {
                         className="w-full h-full"
                         src={heroVideoFile}
                         controls
+                        autoPlay
+                        muted
+                        loop
                         preload="metadata"
                         playsInline
                       />
