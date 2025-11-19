@@ -26,7 +26,7 @@ export function Hero() {
             Creative agency creating culture and conversation.
           </h1>
           <p className="mt-4 text-black/70 max-w-xl text-sm sm:text-base">
-            Light Wave partners with brands to capture life as it’s lived —
+            LIGHTWAVE partners with brands to capture life as it’s lived —
             clean, social-first, and culture-tuned.
           </p>
 

@@ -24,7 +24,7 @@ export function Header({
     <header className="sticky top-0 z-30 border-b border-black/10 backdrop-blur supports-[backdrop-filter]:bg-white/80">
       <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between">
         <Link href="/" className="text-xl font-extrabold tracking-tight">
-          LIGHT WAVE
+          LIGHTWAVE
         </Link>
 
         <nav
