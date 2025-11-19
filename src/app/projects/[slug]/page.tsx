@@ -127,7 +127,7 @@ export default async function ProjectDetail({
                   />
                 </div>
               ) : heroVideoFile ? (
-                <div className="aspect-video w-full overflow-hidden rounded-xl border border-black/10 bg-black">
+                <div className="aspect-video w-full overflow-hidden rounded-xl border object-cover border-black/10 bg-black">
                   <video
                     className="w-full h-full"
                     src={heroVideoFile}
@@ -195,7 +195,7 @@ export default async function ProjectDetail({
                         >
                           <VideoPreview
                             src={url}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full"
                           />
                         </div>
                       ))}

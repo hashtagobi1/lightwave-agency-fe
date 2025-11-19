@@ -1,9 +1,8 @@
 "use client";
-
 import { useRef } from "react";
 
 type VideoPreviewProps = {
-  src: string;
+  src: string; // <-- typed properly
   className?: string;
 };
 
@@ -13,18 +12,15 @@ export function VideoPreview({ src, className = "" }: VideoPreviewProps) {
   return (
     <video
       ref={ref}
-      className={className}
+      className={`video-preview ${className}`}
       src={src}
       muted
       playsInline
+      autoPlay
+      loop
       preload="metadata"
       controls
-      onMouseEnter={() => {
-        if (!ref.current) return;
-        ref.current.play().catch(() => {
-          // ignore autoplay failures
-        });
-      }}
+      onMouseEnter={() => ref.current?.play().catch(() => {})}
       onMouseLeave={() => {
         if (!ref.current) return;
         ref.current.pause();

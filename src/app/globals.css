@@ -40,7 +40,18 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-html, body { background: var(--bg); color: var(--fg); }
+/* Fix fullscreen zoom – works across browsers */
+.video-preview:fullscreen,
+.video-preview:-webkit-full-screen {
+  object-fit: contain !important;
+  background: black;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--fg);
+}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
