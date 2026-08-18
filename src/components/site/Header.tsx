@@ -44,6 +44,9 @@ export function Header({
           <Link href="/projects" className="hover:opacity-100">
             All projects
           </Link>
+          <Link href="/events" className="hover:opacity-100">
+            Events
+          </Link>
         </nav>
 
         <div className="sm:hidden flex items-center gap-2">
@@ -89,6 +92,13 @@ export function Header({
               className="rounded-lg px-3 py-2 text-sm hover:bg-black/5"
             >
               All projects
+            </Link>
+            <Link
+              href="/events"
+              onClick={() => setOpen(false)}
+              className="rounded-lg px-3 py-2 text-sm hover:bg-black/5"
+            >
+              Events
             </Link>
           </div>
         </nav>

@@ -136,6 +136,64 @@ export type Project = {
   order?: number;
 };
 
+export type Event = {
+  _id: string;
+  _type: "event";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  note?: string;
+  format?: string;
+  venue?: string;
+  date?: string;
+  ticketUrl?: string;
+  about?: string;
+  recap?: string;
+  impact?: string;
+  stats?: Array<{
+    _key: string;
+    _type: "stat";
+    label?: string;
+    value?: string;
+  }>;
+  partners?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "brand";
+  }>;
+  videoUrl?: string;
+  videoFiles?: Array<{
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+    };
+    media?: unknown;
+    _type: "file";
+    _key: string;
+  }>;
+  images?: Array<{
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }>;
+  featured?: boolean;
+  order?: number;
+};
+
 export type Slug = {
   _type: "slug";
   current?: string;
@@ -244,6 +302,7 @@ export type AllSanitySchemaTypes =
   | SanityImageHotspot
   | Brand
   | Project
+  | Event
   | Slug
   | SanityImagePaletteSwatch
   | SanityImagePalette

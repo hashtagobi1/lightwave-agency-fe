@@ -71,6 +71,76 @@ export const featuredProjectsQuery = groq`
   }
 `;
 
+// Single event by slug – used on /events/[slug]
+export const eventBySlugQuery = groq`
+  *[_type == "event" && slug.current == $slug][0]{
+    _id,
+    title,
+    slug,
+    note,
+    format,
+    venue,
+    date,
+    ticketUrl,
+    about,
+    recap,
+    impact,
+    stats,
+    featured,
+    "videoUrl": videoUrl,
+    "videoFileUrls": videoFiles[].asset->url,
+    "partners": partners[]->{ _id, name, url, "logoUrl": logo.asset->url },
+    images[]{
+      _key,
+      "url": asset->url,
+      asset
+    },
+  }
+`;
+
+// All events – used on /events and homepage
+export const allEventsQuery = groq`
+  *[_type == "event"] | order(order asc, date desc) {
+    _id,
+    title,
+    note,
+    format,
+    venue,
+    date,
+    ticketUrl,
+    about,
+    recap,
+    impact,
+    stats,
+    featured,
+    "slug": slug.current,
+    "videoUrl": videoUrl,
+    "videoFileUrls": videoFiles[].asset->url,
+    "partners": partners[]->{ _id, name, url, "logoUrl": logo.asset->url },
+    images[]{
+      _key,
+      "url": asset->url,
+      asset
+    },
+  }
+`;
+
+// Featured events – e.g. for homepage "Recent events"
+export const featuredEventsQuery = groq`
+  *[_type == "event" && featured == true]
+  | order(order asc, date desc)[0...3] {
+    _id,
+    title,
+    "slug": slug.current,
+    note,
+    venue,
+    date,
+    impact,
+    videoUrl,
+    images[],
+  }
+`;
+
 // Brands / partners – for the Partners wall
 export const allBrandsQuery = groq`
   *[_type == "brand"] | order(order asc, _createdAt desc) {
