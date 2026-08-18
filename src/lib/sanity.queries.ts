@@ -87,7 +87,8 @@ export const eventBySlugQuery = groq`
     impact,
     stats,
     featured,
-    "videoUrl": videoUrl,
+    heroVideo,
+    "heroImageUrl": heroImage.asset->url,
     "videoFileUrls": videoFiles[].asset->url,
     "partners": partners[]->{ _id, name, url, "logoUrl": logo.asset->url },
     images[]{
@@ -114,7 +115,8 @@ export const allEventsQuery = groq`
     stats,
     featured,
     "slug": slug.current,
-    "videoUrl": videoUrl,
+    heroVideo,
+    "heroImageUrl": heroImage.asset->url,
     "videoFileUrls": videoFiles[].asset->url,
     "partners": partners[]->{ _id, name, url, "logoUrl": logo.asset->url },
     images[]{
@@ -136,8 +138,13 @@ export const featuredEventsQuery = groq`
     venue,
     date,
     impact,
-    videoUrl,
-    images[],
+    heroVideo,
+    "heroImageUrl": heroImage.asset->url,
+    images[]{
+      _key,
+      "url": asset->url,
+      asset
+    },
   }
 `;
 

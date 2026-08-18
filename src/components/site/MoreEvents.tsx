@@ -5,7 +5,7 @@ import type { Event } from "../../../types/index";
 
 type AnyEvent = Event & {
   slug?: string | { current?: string };
-  videoFileUrls?: string[];
+  heroImageUrl?: string;
   images?: { url?: string }[];
 };
 
@@ -27,18 +27,8 @@ export function MoreEvents({ items }: { items: AnyEvent[] }) {
       <div className="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {items.map((e) => {
           const slug = getSlugValue(e);
-          const videoFiles: string[] = (e as any).videoFileUrls ?? [];
           const images = e.images ?? [];
-
-          const hasEmbed = Boolean(e.videoUrl);
-          const hasUploadedVideos = videoFiles.length > 0;
-          const hasImages = images.length > 0;
-
-          const heroVideoEmbed = hasEmbed ? e.videoUrl : null;
-          const heroVideoFile =
-            !heroVideoEmbed && hasUploadedVideos ? videoFiles[0] : null;
-          const heroImage =
-            !heroVideoEmbed && !heroVideoFile && hasImages ? images[0] : null;
+          const thumbUrl = e.heroImageUrl ?? images[0]?.url ?? null;
 
           return (
             <Link
@@ -48,28 +38,9 @@ export function MoreEvents({ items }: { items: AnyEvent[] }) {
               aria-label={`Open ${e.title}`}
             >
               <div className="relative aspect-video rounded-md bg-black/5 border border-black/10 mb-3 overflow-hidden">
-                {heroVideoEmbed ? (
-                  <iframe
-                    title={e.title ?? "Event video"}
-                    className="w-full h-full"
-                    src={heroVideoEmbed}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                ) : heroVideoFile ? (
-                  <video
-                    className="w-full h-full"
-                    src={heroVideoFile}
-                    controls
-                    autoPlay
-                    muted
-                    loop
-                    preload="metadata"
-                    playsInline
-                  />
-                ) : heroImage?.url ? (
+                {thumbUrl ? (
                   <Image
-                    src={heroImage.url}
+                    src={thumbUrl}
                     alt={e.title ?? "Event thumbnail"}
                     fill
                     className="object-cover"

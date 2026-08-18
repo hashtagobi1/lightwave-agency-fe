@@ -47,18 +47,9 @@ export function EventsGrid({ events }: { events: Event[] }) {
         const slug =
           typeof e.slug === "string" ? e.slug : (e as any).slug?.current;
 
-        const videoFiles: string[] = (e as any).videoFileUrls ?? [];
+        const heroImageUrl: string | null = (e as any).heroImageUrl ?? null;
         const images: { url?: string }[] = ((e as any).images ?? []) as any[];
-
-        const hasEmbed = Boolean(e.videoUrl);
-        const hasVideoFile = videoFiles.length > 0;
-        const hasImage = images.length > 0;
-
-        const heroVideoEmbed = hasEmbed ? e.videoUrl : null;
-        const heroVideoFile =
-          !heroVideoEmbed && hasVideoFile ? videoFiles[0] : null;
-        const heroImage =
-          !heroVideoEmbed && !heroVideoFile && hasImage ? images[0] : null;
+        const thumbUrl = heroImageUrl ?? images[0]?.url ?? null;
 
         const isUpcoming = e.date ? new Date(e.date).getTime() > Date.now() : false;
 
@@ -76,29 +67,9 @@ export function EventsGrid({ events }: { events: Event[] }) {
             >
               {/* Media thumb */}
               <div className="aspect-video rounded-lg bg-black/5 border border-black/10 mb-3 overflow-hidden relative">
-                {heroVideoEmbed ? (
-                  <iframe
-                    title={e.title}
-                    className="w-full h-full"
-                    src={heroVideoEmbed}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                ) : heroVideoFile ? (
-                  <video
-                    className="w-full h-full"
-                    src={heroVideoFile}
-                    controls
-                    autoPlay
-                    muted
-                    loop
-                    preload="metadata"
-                    playsInline
-                    aria-label={`Video for ${e.title}`}
-                  />
-                ) : heroImage?.url ? (
+                {thumbUrl ? (
                   <Image
-                    src={heroImage.url}
+                    src={thumbUrl}
                     alt={e.title ?? "Event photo"}
                     fill
                     className="object-cover"

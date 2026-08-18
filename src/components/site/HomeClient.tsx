@@ -3,19 +3,22 @@
 
 import { Hero } from "@/components/site/Hero";
 import { SelectedWork } from "@/components/site/SelectedWork";
+import { RecentEvents } from "@/components/site/RecentEvents";
 import { Team } from "@/components/site/Team";
 import { Book } from "@/components/site/Book";
 import { Contact } from "@/components/site/Contact";
 import { Partners } from "@/components/site/Partners";
 import { motion } from "framer-motion";
-import type { Brand, TeamMember, Project } from "../../../types/index";
+import type { Brand, TeamMember, Project, Event } from "../../../types/index";
 
 export default function HomeClient({
   projects,
+  events,
   brands,
   team,
 }: {
   projects: Project[];
+  events: Event[];
   brands: Brand[];
   team: TeamMember[];
 }) {
@@ -48,23 +51,28 @@ export default function HomeClient({
         <SelectedWork projects={featuredProjects} />
       </motion.section>
 
-      {/* Partners */}
+      {/* Recent events */}
       <motion.section {...sectionAnim(2)}>
+        <RecentEvents events={events} />
+      </motion.section>
+
+      {/* Partners */}
+      <motion.section {...sectionAnim(3)}>
         <Partners brands={brands} />
       </motion.section>
 
       {/* Team */}
-      <motion.section {...sectionAnim(3)}>
+      <motion.section {...sectionAnim(4)}>
         <Team members={team} />
       </motion.section>
 
       {/* Book */}
-      <motion.section {...sectionAnim(4)}>
+      <motion.section {...sectionAnim(5)}>
         <Book />
       </motion.section>
 
       {/* Contact */}
-      <motion.section {...sectionAnim(5)}>
+      <motion.section {...sectionAnim(6)}>
         <Contact />
       </motion.section>
     </div>

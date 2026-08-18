@@ -165,7 +165,19 @@ export type Event = {
     _key: string;
     [internalGroqTypeReferenceTo]?: "brand";
   }>;
-  videoUrl?: string;
+  heroImage?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  heroVideo?: string;
   videoFiles?: Array<{
     asset?: {
       _ref: string;

@@ -7,6 +7,7 @@ import { allEventsQuery, eventBySlugQuery } from "@/lib/sanity.queries";
 import { LightboxGallery } from "@/components/site/LightboxGallery";
 import { MoreEvents } from "@/components/site/MoreEvents";
 import { VideoPreview } from "@/components/site/VideoPreview";
+import { getVideoEmbed } from "@/lib/embeds";
 
 export const runtime = "nodejs";
 
@@ -73,16 +74,21 @@ export default async function EventDetail({
   const partners: { _id: string; name?: string; url?: string; logoUrl?: string }[] =
     event.partners ?? [];
 
-  const hasEmbed = Boolean(event.videoUrl);
+  const heroVideoEmbed = getVideoEmbed(event.heroVideo);
+  const heroImageUrl: string | null = event.heroImageUrl ?? null;
   const hasUploadedVideos = videoFileUrls.length > 0;
   const hasImages = images.length > 0;
 
-  // hero priority: embed > first uploaded video > first image
-  const heroVideoEmbed = hasEmbed ? event.videoUrl : null;
+  // hero priority: dedicated hero video > dedicated hero image > first
+  // uploaded video file > first gallery image
   const heroVideoFile =
-    !heroVideoEmbed && hasUploadedVideos ? videoFileUrls[0] : null;
-  const heroImage =
-    !heroVideoEmbed && !heroVideoFile && hasImages ? images[0] : null;
+    !heroVideoEmbed && !heroImageUrl && hasUploadedVideos
+      ? videoFileUrls[0]
+      : null;
+  const fallbackHeroImage =
+    !heroVideoEmbed && !heroImageUrl && !heroVideoFile && hasImages
+      ? images[0]
+      : null;
 
   // extras (non-hero)
   const extraVideoFiles =
@@ -146,13 +152,30 @@ export default async function EventDetail({
             {/* HERO MEDIA */}
             <div className="relative">
               {heroVideoEmbed ? (
-                <div className="aspect-video w-full overflow-hidden rounded-xl border border-black/10">
+                <div
+                  className={
+                    heroVideoEmbed.aspect === "portrait"
+                      ? "aspect-[9/16] w-full max-w-sm mx-auto overflow-hidden rounded-xl border border-black/10 bg-black"
+                      : "aspect-video w-full overflow-hidden rounded-xl border border-black/10"
+                  }
+                >
                   <iframe
                     title={event.title}
                     className="w-full h-full"
-                    src={heroVideoEmbed}
+                    src={heroVideoEmbed.src}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
+                  />
+                </div>
+              ) : heroImageUrl ? (
+                <div className="aspect-video w-full overflow-hidden rounded-xl border border-black/10 bg-black/5 relative">
+                  <Image
+                    src={heroImageUrl}
+                    alt={event.title ?? "Event photo"}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 66vw"
+                    priority
                   />
                 </div>
               ) : heroVideoFile ? (
@@ -168,10 +191,10 @@ export default async function EventDetail({
                     playsInline
                   />
                 </div>
-              ) : heroImage && heroImage.url ? (
+              ) : fallbackHeroImage && fallbackHeroImage.url ? (
                 <div className="cursor-pointer aspect-video w-full overflow-hidden rounded-xl border border-black/10 bg-black/5 relative">
                   <Image
-                    src={heroImage.url}
+                    src={fallbackHeroImage.url}
                     alt={event.title ?? "Event photo"}
                     fill
                     className="object-cover"
