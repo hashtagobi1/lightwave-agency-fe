@@ -4,9 +4,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { sanityClient } from "@/lib/sanity.client";
 import { allEventsQuery, eventBySlugQuery } from "@/lib/sanity.queries";
-import { LightboxGallery } from "@/components/site/LightboxGallery";
+import { MediaLightbox } from "@/components/site/MediaLightbox";
 import { MoreEvents } from "@/components/site/MoreEvents";
-import { VideoPreview } from "@/components/site/VideoPreview";
 import { getVideoEmbed } from "@/lib/embeds";
 
 export const runtime = "nodejs";
@@ -90,20 +89,26 @@ export default async function EventDetail({
       ? images[0]
       : null;
 
-  // extras (non-hero)
-  const extraVideoFiles =
-    heroVideoFile && videoFileUrls.length > 1
-      ? videoFileUrls.slice(1)
-      : heroVideoFile
-        ? []
-        : videoFileUrls;
+  // everything not already used as the hero goes into the gallery below
+  const galleryVideoUrls = heroVideoFile
+    ? videoFileUrls.slice(1)
+    : videoFileUrls;
+  const galleryImageList = fallbackHeroImage ? images.slice(1) : images;
 
-  const galleryImages = images
-    .filter((img) => img && img.url)
-    .map((img, i) => ({
-      url: img.url as string,
-      alt: `${event.title ?? "Event"} photo ${i + 1}`,
-    }));
+  const galleryItems = [
+    ...galleryVideoUrls.map((url: string, i: number) => ({
+      type: "video" as const,
+      url,
+      alt: `${event.title ?? "Event"} video ${i + 1}`,
+    })),
+    ...galleryImageList
+      .filter((img: any) => img && img.url)
+      .map((img: any, i: number) => ({
+        type: "image" as const,
+        url: img.url as string,
+        alt: `${event.title ?? "Event"} photo ${i + 1}`,
+      })),
+  ];
 
   const isUpcoming = event.date
     ? new Date(event.date).getTime() > Date.now()
@@ -146,210 +151,176 @@ export default async function EventDetail({
           </a>
         )}
 
-        {/* Main layout: hero media + summary */}
-        <div className="mt-6 grid lg:grid-cols-12 gap-8">
-          <div className="lg:col-span-8">
-            {/* HERO MEDIA */}
-            <div className="relative">
-              {heroVideoEmbed ? (
-                <div
-                  className={
-                    heroVideoEmbed.aspect === "portrait"
-                      ? "aspect-[9/16] w-full max-w-sm mx-auto overflow-hidden rounded-xl border border-black/10 bg-black"
-                      : "aspect-video w-full overflow-hidden rounded-xl border border-black/10"
-                  }
-                >
-                  <iframe
-                    title={event.title}
-                    className="w-full h-full"
-                    src={heroVideoEmbed.src}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
-              ) : heroImageUrl ? (
-                <div className="aspect-video w-full overflow-hidden rounded-xl border border-black/10 bg-black/5 relative">
-                  <Image
-                    src={heroImageUrl}
-                    alt={event.title ?? "Event photo"}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 66vw"
-                    priority
-                  />
-                </div>
-              ) : heroVideoFile ? (
-                <div className="aspect-video w-full overflow-hidden rounded-xl border object-cover border-black/10 bg-black">
-                  <video
-                    className="w-full h-full"
-                    src={heroVideoFile}
-                    controls
-                    autoPlay
-                    muted
-                    loop
-                    preload="metadata"
-                    playsInline
-                  />
-                </div>
-              ) : fallbackHeroImage && fallbackHeroImage.url ? (
-                <div className="cursor-pointer aspect-video w-full overflow-hidden rounded-xl border border-black/10 bg-black/5 relative">
-                  <Image
-                    src={fallbackHeroImage.url}
-                    alt={event.title ?? "Event photo"}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 66vw"
-                  />
-                </div>
-              ) : (
-                <div className="aspect-video rounded-xl bg-black/5 border border-black/10 grid place-items-center text-black/40 text-xs">
-                  Media placeholder
-                </div>
-              )}
-
-              {/* Prev/Next arrows */}
-              {prevSlug && (
-                <Link
-                  href={`/events/${prevSlug}`}
-                  aria-label="Previous event"
-                  className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full border border-black/10 bg-white/90 px-3 py-2 text-sm shadow hover:bg-white"
-                >
-                  ←
-                </Link>
-              )}
-              {nextSlug && (
-                <Link
-                  href={`/events/${nextSlug}`}
-                  aria-label="Next event"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full border border-black/10 bg-white/90 px-3 py-2 text-sm shadow hover:bg-white"
-                >
-                  →
-                </Link>
-              )}
+        {/* HERO MEDIA */}
+        <div className="relative mt-6">
+          {heroVideoEmbed ? (
+            <div
+              className={
+                heroVideoEmbed.aspect === "portrait"
+                  ? "aspect-[9/16] w-full max-w-sm mx-auto overflow-hidden rounded-xl border border-black/10 bg-black"
+                  : "aspect-video w-full overflow-hidden rounded-xl border border-black/10"
+              }
+            >
+              <iframe
+                title={event.title}
+                className="w-full h-full"
+                src={heroVideoEmbed.src}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
             </div>
+          ) : heroImageUrl ? (
+            <div className="aspect-video w-full overflow-hidden rounded-xl border border-black/10 bg-black/5 relative">
+              <Image
+                src={heroImageUrl}
+                alt={event.title ?? "Event photo"}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 66vw"
+                priority
+              />
+            </div>
+          ) : heroVideoFile ? (
+            <div className="aspect-video w-full overflow-hidden rounded-xl border object-cover border-black/10 bg-black">
+              <video
+                className="w-full h-full"
+                src={heroVideoFile}
+                controls
+                autoPlay
+                muted
+                loop
+                preload="metadata"
+                playsInline
+              />
+            </div>
+          ) : fallbackHeroImage && fallbackHeroImage.url ? (
+            <div className="aspect-video w-full overflow-hidden rounded-xl border border-black/10 bg-black/5 relative">
+              <Image
+                src={fallbackHeroImage.url}
+                alt={event.title ?? "Event photo"}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 66vw"
+              />
+            </div>
+          ) : (
+            <div className="aspect-video rounded-xl bg-black/5 border border-black/10 grid place-items-center text-black/40 text-xs">
+              Media placeholder
+            </div>
+          )}
 
-            {/* EXTRA MEDIA: more videos + images */}
-            {(extraVideoFiles.length > 0 || galleryImages.length > 1) && (
-              <div className="mt-6 space-y-4">
-                {extraVideoFiles.length > 0 && (
-                  <div className="space-y-2">
-                    <h2 className="text-sm font-semibold text-black/70">
-                      Additional videos
-                    </h2>
-                    <div className="grid sm:grid-cols-2 gap-3">
-                      {extraVideoFiles.map((url: string, i: number) => (
-                        <div
-                          key={i}
-                          className="aspect-video rounded-xl border border-black/10 bg-black overflow-hidden"
-                        >
-                          <VideoPreview src={url} className="w-full h-full" />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+          {/* Prev/Next arrows */}
+          {prevSlug && (
+            <Link
+              href={`/events/${prevSlug}`}
+              aria-label="Previous event"
+              className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full border border-black/10 bg-white/90 px-3 py-2 text-sm shadow hover:bg-white"
+            >
+              ←
+            </Link>
+          )}
+          {nextSlug && (
+            <Link
+              href={`/events/${nextSlug}`}
+              aria-label="Next event"
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full border border-black/10 bg-white/90 px-3 py-2 text-sm shadow hover:bg-white"
+            >
+              →
+            </Link>
+          )}
+        </div>
 
-                {galleryImages.length > 1 && (
-                  <div className="space-y-2">
-                    <h2 className="text-sm font-semibold text-black/70">
-                      Gallery
-                    </h2>
-                    <LightboxGallery images={galleryImages} />
-                  </div>
-                )}
-              </div>
+        {/* MEDIA GALLERY (photos + videos, lightbox) */}
+        {galleryItems.length > 0 && (
+          <div className="mt-6 space-y-2">
+            <h2 className="text-sm font-semibold text-black/70">Gallery</h2>
+            <MediaLightbox items={galleryItems} />
+          </div>
+        )}
+
+        {/* Event data */}
+        <div className="mt-10 rounded-xl border border-black/10 p-6">
+          <div className="uppercase tracking-widest text-xs text-black/60">
+            Event recap
+          </div>
+
+          <div className="mt-3 grid sm:grid-cols-3 gap-1 sm:gap-6 text-xs text-black/70">
+            {event.format && (
+              <p>
+                <span className="font-semibold">Format:</span> {event.format}
+              </p>
+            )}
+            {event.venue && (
+              <p>
+                <span className="font-semibold">Venue:</span> {event.venue}
+              </p>
+            )}
+            {event.date && (
+              <p>
+                <span className="font-semibold">Date:</span>{" "}
+                {formatDate(event.date)}
+              </p>
             )}
           </div>
 
-          {/* Recap summary card */}
-          <div className="lg:col-span-4">
-            <div className="rounded-xl border border-black/10 p-4">
-              <div className="uppercase tracking-widest text-xs text-black/60">
-                Event recap
-              </div>
-
-              <div className="mt-3 space-y-1 text-xs text-black/70">
-                {event.format && (
-                  <p>
-                    <span className="font-semibold">Format:</span>{" "}
-                    {event.format}
-                  </p>
-                )}
-                {event.venue && (
-                  <p>
-                    <span className="font-semibold">Venue:</span>{" "}
-                    {event.venue}
-                  </p>
-                )}
-                {event.date && (
-                  <p>
-                    <span className="font-semibold">Date:</span>{" "}
-                    {formatDate(event.date)}
-                  </p>
-                )}
-              </div>
-
-              {stats.length > 0 && (
-                <div className="mt-4 grid grid-cols-2 gap-3">
-                  {stats.map((s, i) => (
-                    <div key={i}>
-                      <div className="text-lg font-bold leading-none">
-                        {s.value}
-                      </div>
-                      <div className="text-[11px] text-black/60 mt-1">
-                        {s.label}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <div className="mt-4 space-y-2 text-sm">
-                {event.about && (
-                  <p>
-                    <span className="font-semibold">About:</span>{" "}
-                    {event.about}
-                  </p>
-                )}
-                {event.impact && (
-                  <p>
-                    <span className="font-semibold">Result:</span>{" "}
-                    {event.impact}
-                  </p>
-                )}
-              </div>
-
-              {partners.length > 0 && (
-                <div className="mt-4">
-                  <div className="text-xs font-semibold text-black/70 mb-2">
-                    Partners
+          {stats.length > 0 && (
+            <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {stats.map((s, i) => (
+                <div key={i}>
+                  <div className="text-lg font-bold leading-none">
+                    {s.value}
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {partners.map((p) =>
-                      p.url ? (
-                        <a
-                          key={p._id}
-                          href={p.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="rounded-full border border-black/10 px-3 py-1 text-xs hover:bg-black/5"
-                        >
-                          {p.name}
-                        </a>
-                      ) : (
-                        <span
-                          key={p._id}
-                          className="rounded-full border border-black/10 px-3 py-1 text-xs"
-                        >
-                          {p.name}
-                        </span>
-                      ),
-                    )}
+                  <div className="text-[11px] text-black/60 mt-1">
+                    {s.label}
                   </div>
                 </div>
-              )}
+              ))}
             </div>
+          )}
+
+          <div className="mt-6 grid sm:grid-cols-2 gap-4 text-sm">
+            {event.about && (
+              <p>
+                <span className="font-semibold">About:</span> {event.about}
+              </p>
+            )}
+            {event.impact && (
+              <p>
+                <span className="font-semibold">Result:</span>{" "}
+                {event.impact}
+              </p>
+            )}
           </div>
+
+          {partners.length > 0 && (
+            <div className="mt-6">
+              <div className="text-xs font-semibold text-black/70 mb-2">
+                Partners
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {partners.map((p) =>
+                  p.url ? (
+                    <a
+                      key={p._id}
+                      href={p.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-full border border-black/10 px-3 py-1 text-xs hover:bg-black/5"
+                    >
+                      {p.name}
+                    </a>
+                  ) : (
+                    <span
+                      key={p._id}
+                      className="rounded-full border border-black/10 px-3 py-1 text-xs"
+                    >
+                      {p.name}
+                    </span>
+                  ),
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Full-width "Recap" */}
