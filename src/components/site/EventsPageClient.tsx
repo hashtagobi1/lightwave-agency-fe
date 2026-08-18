@@ -21,8 +21,8 @@ export function EventsPageClient({ events }: { events: Event[] }) {
         <div>
           <h1 className="text-3xl font-bold">Events</h1>
           <p className="text-sm text-black/60 mt-1">
-            LightWave-run events — tournaments, launches and brand
-            activations — and how they went.
+            LightWave-run events: tournaments, launches and brand
+            activations, and how they went.
           </p>
         </div>
         <Link href="/" className="text-sm underline">

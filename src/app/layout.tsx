@@ -5,7 +5,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 
 export const metadata: Metadata = {
-  title: "LIGHTWAVE — Creative Agency",
+  title: "LIGHTWAVE | Creative Agency",
   description: "Creative agency creating culture and conversation.",
 };
 
