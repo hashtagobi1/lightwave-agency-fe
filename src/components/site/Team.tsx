@@ -37,6 +37,9 @@ export function Team({ members }: { members: TeamMember[] }) {
                     fill
                     sizes="64px"
                     className="object-cover"
+                    style={{
+                      objectPosition: `${(m.hotspot?.x ?? 0.5) * 100}% ${(m.hotspot?.y ?? 0.5) * 100}%`,
+                    }}
                   />
                 </div>
               ) : (

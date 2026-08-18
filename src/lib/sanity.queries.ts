@@ -166,5 +166,6 @@ export const allTeamQuery = groq`
     title,
     description,
     "photoUrl": profilePic.asset->url,
+    "hotspot": profilePic.hotspot,
   }
 `;

@@ -36,6 +36,7 @@ export type TeamMember = {
   };
   order?: number;
   photoUrl: string | undefined;
+  hotspot?: SanityImageHotspot;
 };
 
 export type SanityImageCrop = {
