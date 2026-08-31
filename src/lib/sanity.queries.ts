@@ -96,6 +96,7 @@ export const eventBySlugQuery = groq`
       "url": asset->url,
       asset
     },
+    photoCredit,
   }
 `;
 

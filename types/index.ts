@@ -158,7 +158,9 @@ export type Event = {
     _type: "stat";
     label?: string;
     value?: string;
+    link?: string;
   }>;
+  photoCredit?: string;
   partners?: Array<{
     _ref: string;
     _type: "reference";

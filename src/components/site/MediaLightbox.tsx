@@ -8,11 +8,20 @@ type MediaItem =
   | { type: "image"; url: string; alt: string }
   | { type: "video"; url: string; alt: string };
 
-export function MediaLightbox({ items }: { items: MediaItem[] }) {
+export function MediaLightbox({
+  items,
+  previewCount = 15,
+}: {
+  items: MediaItem[];
+  previewCount?: number;
+}) {
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
 
   if (!items || items.length === 0) return null;
+
+  const visibleItems = items.slice(0, previewCount);
+  const remaining = items.length - visibleItems.length;
 
   const openAt = (i: number) => {
     setIndex(i);
@@ -35,25 +44,26 @@ export function MediaLightbox({ items }: { items: MediaItem[] }) {
 
   return (
     <>
-      {/* Thumbnail grid */}
+      {/* Thumbnail grid (preview only — the lightbox below still scrolls through everything) */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-        {items.map((item, i) => (
-          <button
-            key={i}
-            type="button"
-            onClick={() => openAt(i)}
-            className="relative aspect-video cursor-pointer rounded-xl bg-black/5 border border-black/10 overflow-hidden focus:outline-none focus:ring-2 focus:ring-black/40"
-          >
-            {item.type === "image" ? (
-              <Image
-                src={item.url}
-                alt={item.alt}
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              />
-            ) : (
-              <>
+        {visibleItems.map((item, i) => {
+          const isLastTile = i === visibleItems.length - 1 && remaining > 0;
+          return (
+            <button
+              key={i}
+              type="button"
+              onClick={() => openAt(i)}
+              className="relative aspect-video cursor-pointer rounded-xl bg-black/5 border border-black/10 overflow-hidden focus:outline-none focus:ring-2 focus:ring-black/40"
+            >
+              {item.type === "image" ? (
+                <Image
+                  src={item.url}
+                  alt={item.alt}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                />
+              ) : (
                 <video
                   src={item.url}
                   className="w-full h-full object-cover"
@@ -62,15 +72,22 @@ export function MediaLightbox({ items }: { items: MediaItem[] }) {
                   playsInline
                   aria-label={item.alt}
                 />
+              )}
+
+              {isLastTile ? (
+                <span className="absolute inset-0 flex items-center justify-center bg-black/60 text-white text-sm font-semibold">
+                  +{remaining} more
+                </span>
+              ) : item.type === "video" ? (
                 <span className="absolute inset-0 flex items-center justify-center bg-black/20">
                   <span className="rounded-full bg-white/90 p-2">
                     <Play className="h-4 w-4 text-black" fill="currentColor" />
                   </span>
                 </span>
-              </>
-            )}
-          </button>
-        ))}
+              ) : null}
+            </button>
+          );
+        })}
       </div>
 
       {/* Lightbox overlay */}

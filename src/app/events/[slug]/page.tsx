@@ -69,7 +69,8 @@ export default async function EventDetail({
   // ---- MEDIA ARRAYS FROM GROQ PROJECTIONS ----
   const videoFileUrls: string[] = event.videoFileUrls ?? [];
   const images: any[] = event.images ?? [];
-  const stats: { label?: string; value?: string }[] = event.stats ?? [];
+  const stats: { label?: string; value?: string; link?: string }[] =
+    event.stats ?? [];
   const partners: { _id: string; name?: string; url?: string; logoUrl?: string }[] =
     event.partners ?? [];
 
@@ -233,7 +234,14 @@ export default async function EventDetail({
         {/* MEDIA GALLERY (photos + videos, lightbox) */}
         {galleryItems.length > 0 && (
           <div className="mt-6 space-y-2">
-            <h2 className="text-sm font-semibold text-black/70">Gallery</h2>
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="text-sm font-semibold text-black/70">Gallery</h2>
+              {event.photoCredit && (
+                <span className="text-xs text-black/50">
+                  Taken by {event.photoCredit}
+                </span>
+              )}
+            </div>
             <MediaLightbox items={galleryItems} />
           </div>
         )}
@@ -268,7 +276,18 @@ export default async function EventDetail({
               {stats.map((s, i) => (
                 <div key={i}>
                   <div className="text-lg font-bold leading-none">
-                    {s.value}
+                    {s.link ? (
+                      <a
+                        href={s.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline hover:no-underline"
+                      >
+                        {s.value}
+                      </a>
+                    ) : (
+                      s.value
+                    )}
                   </div>
                   <div className="text-[11px] text-black/60 mt-1">
                     {s.label}
