@@ -26,10 +26,8 @@ export function Hero() {
             Creative agency creating culture and conversation.
           </h1>
           <p className="mt-4 text-black/70 max-w-xl text-sm sm:text-base">
-            LIGHTWAVE partners with brands to create cultural impact.
-          </p>
-          <p className="mt-4 text-black/70 max-w-xl text-sm sm:text-base italics">
-            .Music.Tech.Film.
+            LightWave delivers marketing, tech and music production for
+            brands and artists.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
